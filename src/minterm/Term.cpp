@@ -1,4 +1,7 @@
 #include "Term.h"
+#include <bitset>
+#include <algorithm> // Fix for count()
+#include <iostream>
 
 // Constructor
 Term::Term(int DecimalValue, int numOfVariables) {
@@ -6,7 +9,7 @@ Term::Term(int DecimalValue, int numOfVariables) {
     binaryValue = convertDecToBin(numOfVariables);
     onesCount = calculateOnesCount();
     combined = false;
-    coveredTerms = {};
+    coveredTerms = {DecimalValue}; // The term covers itself initially
 }
 
 Term::Term(string BinaryValue, set<int> CoveredTerms) {
@@ -18,13 +21,12 @@ Term::Term(string BinaryValue, set<int> CoveredTerms) {
 
 // Helpers
 string Term::convertDecToBin(int numOfVariables) {
-    // TODO: convert (int) decimalValue to (string) binaryValue and store it in binaryValue
-    return "";
+    string binaryStr = bitset<32>(decimalValue).to_string(); // Convert to 32-bit binary
+    return binaryStr.substr(32 - numOfVariables); // Extract only relevant bits
 }
 
 int Term::calculateOnesCount() {
-    // TODO: calculate the number of 1's in the binaryValue
-    return 0;
+    return std::count(binaryValue.begin(), binaryValue.end(), '1'); // Use std::count correctly
 }
 
 // Getters
@@ -42,11 +44,26 @@ void Term::setCombined(bool val) {
 }
 
 // Methods
-
 bool Term::canCombineWith(const Term& term) {
-    // TODO: check if two terms can be combined
+    int diffCount = 0;
+    for (size_t i = 0; i < binaryValue.length(); i++) {
+        if (binaryValue[i] != term.binaryValue[i]) {
+            diffCount++;
+            if (diffCount > 1) return false; // Must differ by only one bit
+        }
+    }
+    return (diffCount == 1);
 }
 
 Term Term::combineWith(const Term& otherTerm) {
-    // TODO: combine two terms together and return the combined one
+    string combinedBinary = binaryValue;
+    for (size_t i = 0; i < binaryValue.length(); i++) {
+        if (binaryValue[i] != otherTerm.binaryValue[i]) {
+            combinedBinary[i] = '-'; // Replace differing bit with '-'
+        }
+    }
+    set<int> newCoveredTerms = coveredTerms;
+    newCoveredTerms.insert(otherTerm.coveredTerms.begin(), otherTerm.coveredTerms.end());
+
+    return Term(combinedBinary, newCoveredTerms);
 }
