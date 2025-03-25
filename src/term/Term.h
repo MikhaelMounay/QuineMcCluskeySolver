@@ -28,8 +28,10 @@ public:
     Term(string BinaryValue, set<int> CoveredTerms);
 
     // Getters
+    int getDecimalValue();
     string getBinaryValue();
     bool isCombined();
+    set<int> getCoveredTerms();
 
     // Setters
     void _setLogger(Logger* logger);
@@ -38,6 +40,7 @@ public:
     // Methods
     bool canCombineWith(const Term& term);
     Term combineWith(Term* otherTerm);
+    bool covers(Term& term);
 };
 
 #endif //TERM_H

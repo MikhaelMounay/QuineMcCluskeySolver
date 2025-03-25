@@ -21,6 +21,7 @@ Term::Term(int DecimalValue, int numOfVariables) {
 }
 
 Term::Term(string BinaryValue, set<int> CoveredTerms) {
+    decimalValue = -1;
     binaryValue = move(BinaryValue);
     onesCount = calculateOnesCount();
     combined = false;
@@ -40,12 +41,21 @@ int Term::calculateOnesCount() {
 }
 
 // Getters
+int Term::getDecimalValue() {
+    return decimalValue;
+}
+
 string Term::getBinaryValue() {
     return binaryValue;
 }
 
 bool Term::isCombined() {
     return combined;
+}
+
+// TODO: test suite
+set<int> Term::getCoveredTerms() {
+    return coveredTerms;
 }
 
 // Setters
@@ -94,4 +104,9 @@ Term Term::combineWith(Term* otherTerm) {
     otherTerm->setCombined(true);
 
     return Term{combinedBinary, newCoveredTerms};
+}
+
+// TODO: test suite
+bool Term::covers(Term& otherTerm) {
+    return coveredTerms.contains(otherTerm.getDecimalValue());
 }
