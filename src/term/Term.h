@@ -1,12 +1,16 @@
-#ifndef MINTERM_H
-#define MINTERM_H
+#ifndef TERM_H
+#define TERM_H
 
 #include <string>
 #include <set>
 using namespace std;
 
+#include "../logger/Logger.h"
+
 class Term {
 private:
+    Logger* log;
+
     int decimalValue;
     string binaryValue;
     int onesCount;
@@ -19,6 +23,7 @@ private:
 
 public:
     // Constructor
+    Term();
     Term(int DecimalValue, int numOfVariables);
     Term(string BinaryValue, set<int> CoveredTerms);
 
@@ -27,11 +32,12 @@ public:
     bool isCombined();
 
     // Setters
+    void _setLogger(Logger* logger);
     void setCombined(bool val);
 
     // Methods
-    bool canCombineWith(const Term &term);
-    Term combineWith(const Term &otherTerm);
+    bool canCombineWith(const Term& term);
+    Term combineWith(const Term& otherTerm);
 };
 
-#endif //MINTERM_H
+#endif //TERM_H

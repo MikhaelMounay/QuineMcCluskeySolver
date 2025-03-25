@@ -1,7 +1,10 @@
 #include <iostream>
 using namespace std;
 
+#include "logger/Logger.h"
+
 int main() {
-  std::cout << "Hello, World!" << std::endl;
-  return 0;
+    Logger log(&cout);
+    log << "Hello, World!\n";
+    return 0;
 }
