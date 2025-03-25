@@ -32,7 +32,6 @@ string Term::convertDecToBin(int numOfVariables) {
     // Convert to 20-bit binary (the max number of variables our program can handle)
     string binaryStr = bitset<20>(decimalValue).to_string();
     // Extract only relevant bits according to the processed function
-    // TODO: make sure we don't need an additional '- 1' in the expression below
     return binaryStr.substr(20 - numOfVariables);
 }
 
@@ -73,23 +72,26 @@ bool Term::canCombineWith(const Term& term) {
     return (diffCount == 1);
 }
 
-Term Term::combineWith(const Term& otherTerm) {
-    if (!canCombineWith(otherTerm)) {
+Term Term::combineWith(Term* otherTerm) {
+    if (!canCombineWith(*otherTerm)) {
         return Term{};
     }
 
     // Replace differing bit with '-'
     string combinedBinary = binaryValue;
     for (int i = 0; i < binaryValue.length(); i++) {
-        if (binaryValue[i] != otherTerm.binaryValue[i]) {
+        if (binaryValue[i] != otherTerm->binaryValue[i]) {
             combinedBinary[i] = '-';
         }
     }
 
     // Add the covered terms for both terms together
     set<int> newCoveredTerms = coveredTerms;
-    newCoveredTerms.insert(otherTerm.coveredTerms.begin(),
-                           otherTerm.coveredTerms.end());
+    newCoveredTerms.insert(otherTerm->coveredTerms.begin(),
+                           otherTerm->coveredTerms.end());
+
+    combined = true;
+    otherTerm->setCombined(true);
 
     return Term{combinedBinary, newCoveredTerms};
 }

@@ -37,7 +37,7 @@ public:
 
     // Methods
     bool canCombineWith(const Term& term);
-    Term combineWith(const Term& otherTerm);
+    Term combineWith(Term* otherTerm);
 };
 
 #endif //TERM_H
