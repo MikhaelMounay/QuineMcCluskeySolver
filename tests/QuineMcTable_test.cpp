@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
 
-TEST(MainTest, FirstTest) {
+TEST(QuineMcTableTest, FirstTest) {
     std::cout << "Testing tests" << std::endl;
 }

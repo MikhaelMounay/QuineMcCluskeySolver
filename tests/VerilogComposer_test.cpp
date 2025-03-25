@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
 
-TEST(MainTest, FirstTest) {
+TEST(VerilogComposerTest, FirstTest) {
     std::cout << "Testing tests" << std::endl;
 }
