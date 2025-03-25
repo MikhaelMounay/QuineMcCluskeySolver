@@ -18,7 +18,7 @@ private:
 
     // Helpers
     void createTable();
-    vector<vector<string>> combineTerms();
+    vector<Term> combineTerms();
     void solve();
 
 public:
@@ -26,11 +26,16 @@ public:
     QuineMcTable();
     QuineMcTable(vector<Term> Minterms, int NumberOfVariables);
 
+
+
     // Setters
     void _setLogger(Logger* logger);
 
     // Methods
     vector<Term> getPrimeImplicants();
+    void sortMintermsByOnes();
+    vector<Term> getMinterms();
+
 };
 
 #endif //QUINEMCTABLE_H

@@ -19,7 +19,7 @@ private:
 
     // Helpers
     string convertDecToBin(int numOfVariables);
-    int calculateOnesCount();
+
 
 public:
     // Constructor
@@ -41,6 +41,7 @@ public:
     bool canCombineWith(const Term& term);
     Term combineWith(Term* otherTerm);
     bool covers(Term& term);
+    int calculateOnesCount();
 };
 
 #endif //TERM_H
