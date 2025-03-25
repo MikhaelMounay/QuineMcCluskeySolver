@@ -3,12 +3,9 @@
 #include <iostream>
 using namespace std;
 
-// Static members
-ostringstream Logger::_oss;
-
 // Constructors
 Logger::Logger() {
-    stream = &Logger::_oss;
+    stream = &_oss;
 }
 
 Logger::Logger(ostream* Stream) {
@@ -18,4 +15,8 @@ Logger::Logger(ostream* Stream) {
 // Getters
 ostream* Logger::get_ostream() {
     return stream;
+}
+
+string Logger::toString() {
+    return _oss.str();
 }

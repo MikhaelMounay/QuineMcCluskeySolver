@@ -6,7 +6,7 @@ using namespace std;
 
 class Logger {
 private:
-    static ostringstream _oss;
+    ostringstream _oss;
     ostream* stream;
 
 public:
@@ -16,6 +16,7 @@ public:
 
     // Getters
     ostream* get_ostream();
+    string toString();
 
     // Operator Overloading
     template <typename T>
@@ -23,6 +24,11 @@ public:
         if (stream != nullptr) {
             (*stream) << a;
         }
+
+        if (stream != &_oss) {
+            _oss << a;
+        }
+
         return *this;
     }
 
@@ -30,6 +36,11 @@ public:
         if (stream != nullptr) {
             (*stream) << manip;
         }
+
+        if (stream != &_oss) {
+            _oss << manip;
+        }
+
         return *this;
     }
 };
