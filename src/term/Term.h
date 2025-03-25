@@ -20,7 +20,6 @@ private:
     // Helpers
     string convertDecToBin(int numOfVariables);
 
-
 public:
     // Constructor
     Term();
@@ -38,10 +37,13 @@ public:
     void setCombined(bool val);
 
     // Methods
+    int getOnesCount();
     bool canCombineWith(const Term& term);
     Term combineWith(Term* otherTerm);
     bool covers(Term& term);
-    int calculateOnesCount();
+
+    // Operator Overloading
+    bool operator==(const Term& other);
 };
 
 #endif //TERM_H

@@ -5,6 +5,8 @@
 
 // Constructor
 Term::Term() {
+    log = new Logger;
+
     decimalValue = -1;
     binaryValue = "";
     onesCount = -1;
@@ -13,17 +15,21 @@ Term::Term() {
 }
 
 Term::Term(int DecimalValue, int numOfVariables) {
+    log = new Logger;
+
     decimalValue = DecimalValue;
     binaryValue = convertDecToBin(numOfVariables);
-    onesCount = calculateOnesCount();
+    onesCount = getOnesCount();
     combined = false;
     coveredTerms = {DecimalValue}; // The term covers itself initially
 }
 
 Term::Term(string BinaryValue, set<int> CoveredTerms) {
+    log = new Logger;
+
     decimalValue = -1;
     binaryValue = move(BinaryValue);
-    onesCount = calculateOnesCount();
+    onesCount = getOnesCount();
     combined = false;
     coveredTerms = move(CoveredTerms);
 }
@@ -36,7 +42,7 @@ string Term::convertDecToBin(int numOfVariables) {
     return binaryStr.substr(20 - numOfVariables);
 }
 
-int Term::calculateOnesCount() {
+int Term::getOnesCount() {
     return count(binaryValue.begin(), binaryValue.end(), '1');
 }
 
@@ -109,4 +115,9 @@ Term Term::combineWith(Term* otherTerm) {
 // TODO: test suite
 bool Term::covers(Term& otherTerm) {
     return coveredTerms.contains(otherTerm.getDecimalValue());
+}
+
+// Operator Overloading
+bool Term::operator==(const Term& other) {
+    return binaryValue == other.binaryValue;
 }

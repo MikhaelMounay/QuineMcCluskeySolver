@@ -18,24 +18,21 @@ private:
 
     // Helpers
     void createTable();
+    static bool compareTerms(Term& a, Term& b);
+    void sortMintermsByOnes();
     vector<Term> combineTerms();
     void solve();
 
 public:
-    // Contructors
+    // Constructors
     QuineMcTable();
     QuineMcTable(vector<Term> Minterms, int NumberOfVariables);
-
-
 
     // Setters
     void _setLogger(Logger* logger);
 
     // Methods
     vector<Term> getPrimeImplicants();
-    void sortMintermsByOnes();
-    vector<Term> getMinterms();
-
 };
 
 #endif //QUINEMCTABLE_H

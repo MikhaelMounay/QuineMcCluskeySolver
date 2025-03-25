@@ -1,65 +1,61 @@
 #include "QuineMcTable.h"
-#include <iostream>
 #include <iomanip>
 #include <algorithm>
 
-// constructor
+// Constructors
 QuineMcTable::QuineMcTable() {
-    log = nullptr;
+    log = new Logger;
+
     numberOfVariables = 0;
 }
 
 QuineMcTable::QuineMcTable(vector<Term> Minterms, int NumberOfVariables) {
+    log = new Logger;
+
     minterms.assign(Minterms.begin(), Minterms.end());
     numberOfVariables = NumberOfVariables;
-    log = nullptr;
-    createTable(); // create the table
+
+    createTable();
     solve();
 }
 
-// set Logger
+// Setters
 void QuineMcTable::_setLogger(Logger* logger) {
     log = logger;
 }
 
-// create table to track combinable minterms
+// Helpers
+// Create table to track combinable minterms
 void QuineMcTable::createTable() {
     table.resize(minterms.size(), vector<string>(minterms.size(), ""));
-    for (int i = 0; i < minterms.size(); i++)
-    {
-        for (int j = i + 1; j < minterms.size(); j++)
-        {
-            if (minterms[i].canCombineWith(minterms[j]))
-            {
+    for (int i = 0; i < minterms.size(); i++) {
+        for (int j = i + 1; j < minterms.size(); j++) {
+            if (minterms[i].canCombineWith(minterms[j])) {
                 table[i][j] = "X";
             }
         }
     }
 }
 
-// sorting minterms by the number of 1s in binary representation
-bool compareTerms( Term& a,  Term& b) {
-    return a.calculateOnesCount() < b.calculateOnesCount();
+// Sorting minterms by the number of 1s in binary representation
+bool QuineMcTable::compareTerms(Term& a, Term& b) {
+    return a.getOnesCount() < b.getOnesCount();
 }
 
 void QuineMcTable::sortMintermsByOnes() {
-    sort(minterms.begin(), minterms.end(), compareTerms);
+    sort(minterms.begin(), minterms.end(), QuineMcTable::compareTerms);
 }
 
-// combine terms
 vector<Term> QuineMcTable::combineTerms() {
     vector<Term> newTerms;
     vector<bool> combined(minterms.size(), false);
 
-    for (int i = 0; i < minterms.size(); i++)
-    {
-        for (int j = i + 1; j < minterms.size(); j++)
-        {
-            if (minterms[i].canCombineWith(minterms[j]))
-            {
+    for (int i = 0; i < minterms.size(); i++) {
+        for (int j = i + 1; j < minterms.size(); j++) {
+            if (minterms[i].canCombineWith(minterms[j])) {
                 Term combinedTerm = minterms[i].combineWith(&minterms[j]);
-                if (find(newTerms.begin(), newTerms.end(), combinedTerm) == newTerms.end())
-                {
+                if (find(newTerms.begin(), newTerms.end(), combinedTerm) ==
+                    newTerms.end()) {
                     newTerms.push_back(combinedTerm);
                 }
                 combined[i] = true;
@@ -68,11 +64,9 @@ vector<Term> QuineMcTable::combineTerms() {
         }
     }
 
-    // add terms that were not combined (prime implicants)
-    for (int i = 0; i < minterms.size(); i++)
-    {
-        if (!combined[i])
-        {
+    // Add terms that were not combined (prime implicants)
+    for (int i = 0; i < minterms.size(); i++) {
+        if (!combined[i]) {
             primeImps.push_back(minterms[i]);
         }
     }
@@ -84,21 +78,16 @@ vector<Term> QuineMcTable::combineTerms() {
 void QuineMcTable::solve() {
     sortMintermsByOnes(); // sort before processing
 
-    while (!minterms.empty())
-    {
+    while (!minterms.empty()) {
         vector<Term> newMinterms = combineTerms();
-        if (newMinterms.empty())
+        if (newMinterms.empty()) {
             break; // stop if no new terms created
+        }
         minterms.assign(newMinterms.begin(), newMinterms.end());
     }
 }
 
-// get prime implicants
+// Get prime implicants
 vector<Term> QuineMcTable::getPrimeImplicants() {
     return primeImps;
-}
-
-// Get original minterms for use in ImplicantsTable
-vector<Term> QuineMcTable::getMinterms() {
-    return minterms;
 }
