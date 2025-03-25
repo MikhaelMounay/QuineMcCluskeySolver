@@ -17,7 +17,8 @@ private:
     int numberOfVariables;
 
     // Helpers
-    static string getExpressionFromBinary(const string& binaryValue, const vector<char>& variables);
+    static string getExpressionFromBinary(const string& binaryValue,
+                                          const vector<char>& variables);
 
     void createAndSimplifyTable();
     void eliminateDominatedRows();
@@ -27,7 +28,8 @@ private:
 public:
     // Constructors
     ImplicantsTable();
-    ImplicantsTable(vector<Term> PrimeImps, vector<Term> Minterms, int NumberOfVariables);
+    ImplicantsTable(vector<Term> PrimeImps, vector<Term> Minterms,
+                    int NumberOfVariables);
 
     // Setters
     void _setLogger(Logger* logger);

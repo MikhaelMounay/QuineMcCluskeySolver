@@ -74,7 +74,7 @@ void ImplicantsTable::eliminateDominatedRows() {
             }
 
             if (isDominated) {
-                dominated[j] = true;  // Mark row j as dominated
+                dominated[j] = true; // Mark row j as dominated
             }
         }
     }
@@ -111,7 +111,7 @@ void ImplicantsTable::eliminateDominatedColumns() {
             }
 
             if (isDominated) {
-                dominated[k] = true;  // Mark column k as dominated
+                dominated[k] = true; // Mark column k as dominated
             }
         }
     }
@@ -127,7 +127,8 @@ void ImplicantsTable::eliminateDominatedColumns() {
     }
 }
 
-string ImplicantsTable::getExpressionFromBinary(const string& binaryValue, const vector<char>& variables) {
+string ImplicantsTable::getExpressionFromBinary(const string& binaryValue,
+                                                const vector<char>& variables) {
     stringstream expression;
     for (int i = 0; i < binaryValue.size(); i++) {
         if (binaryValue[i] == '1') {
