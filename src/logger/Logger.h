@@ -6,12 +6,16 @@ using namespace std;
 
 class Logger {
 private:
+    static ostringstream _oss;
     ostream* stream;
 
 public:
     // Constructors
     Logger();
     explicit Logger(ostream* OS);
+
+    // Getters
+    ostream* get_ostream();
 
     // Operator Overloading
     template <typename T>
