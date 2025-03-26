@@ -20,6 +20,9 @@ private:
     // Helpers
     string convertDecToBin(int numOfVariables);
 
+    // Utils
+    void _logData();
+
 public:
     // Constructor
     Term();
