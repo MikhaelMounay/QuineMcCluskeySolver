@@ -37,13 +37,26 @@ void QuineMcTable::createTable() {
     }
 }
 
-// Sorting minterms by the number of 1s in binary representation
-bool QuineMcTable::compareTerms(Term& a, Term& b) {
-    return a.getOnesCount() < b.getOnesCount();
+// solve: find prime implicants
+void QuineMcTable::solve() {
+    sortMintermsByOnes(); // sort before processing
+
+    while (!minterms.empty()) {
+        vector<Term> newMinterms = combineTerms();
+        if (newMinterms.empty()) {
+            break; // stop if no new terms created
+        }
+        minterms.assign(newMinterms.begin(), newMinterms.end());
+    }
 }
 
 void QuineMcTable::sortMintermsByOnes() {
     sort(minterms.begin(), minterms.end(), QuineMcTable::compareTerms);
+}
+
+// Sorting minterms by the number of 1s in binary representation
+bool QuineMcTable::compareTerms(Term& a, Term& b) {
+    return a.getOnesCount() < b.getOnesCount();
 }
 
 vector<Term> QuineMcTable::combineTerms() {
@@ -74,19 +87,7 @@ vector<Term> QuineMcTable::combineTerms() {
     return newTerms;
 }
 
-// solve: find prime implicants
-void QuineMcTable::solve() {
-    sortMintermsByOnes(); // sort before processing
-
-    while (!minterms.empty()) {
-        vector<Term> newMinterms = combineTerms();
-        if (newMinterms.empty()) {
-            break; // stop if no new terms created
-        }
-        minterms.assign(newMinterms.begin(), newMinterms.end());
-    }
-}
-
+// Methods
 // Get prime implicants
 vector<Term> QuineMcTable::getPrimeImplicants() {
     return primeImps;

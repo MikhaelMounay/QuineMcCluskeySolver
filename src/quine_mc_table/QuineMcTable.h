@@ -8,6 +8,8 @@ using namespace std;
 #include "../term/Term.h"
 
 class QuineMcTable {
+    friend class QuineMcTableTest;
+
 private:
     Logger* log;
 
@@ -18,10 +20,10 @@ private:
 
     // Helpers
     void createTable();
-    static bool compareTerms(Term& a, Term& b);
-    void sortMintermsByOnes();
-    vector<Term> combineTerms();
     void solve();
+    void sortMintermsByOnes();
+    static bool compareTerms(Term& a, Term& b);
+    vector<Term> combineTerms();
 
 public:
     // Constructors

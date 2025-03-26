@@ -4,7 +4,7 @@ using namespace std;
 
 #include "logger/Logger.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     Logger log;
     bool verbose = false;
     string inputFilepath;
@@ -13,7 +13,9 @@ int main(int argc, char *argv[]) {
 
     // Handling Command Line Arguments
     if (argc < 2) {
-        cerr << "Usage: " << argv[0] << "[-v] [-d <dump_log_file>] [-o <verilog_file>] <input_file>" << endl;
+        cerr << "Usage: " << argv[0] <<
+            "[-v] [-d <dump_log_file>] [-o <verilog_file>] <input_file>" <<
+            endl;
         return 1;
     }
 
@@ -22,16 +24,22 @@ int main(int argc, char *argv[]) {
             verbose = true;
         } else if (string(argv[i]) == "-d") {
             if (string(argv[i + 1]).empty()) {
-                cerr << "Error: Log file path must be provided after -o" << endl;
-                cerr << "Usage: " << argv[0] << "[-v] [-d <dump_log_file>] [-o <verilog_file>] <input_file>" << endl;
+                cerr << "Error: Log file path must be provided after -o" <<
+                    endl;
+                cerr << "Usage: " << argv[0] <<
+                    "[-v] [-d <dump_log_file>] [-o <verilog_file>] <input_file>"
+                    << endl;
                 return 1;
             }
 
             outputFilepath = string(argv[i]);
         } else if (string(argv[i]) == "-o") {
             if (string(argv[i + 1]).empty()) {
-                cerr << "Error: Output file path must be provided after -o" << endl;
-                cerr << "Usage: " << argv[0] << "[-v] [-d <dump_log_file>] [-o <verilog_file>] <input_file>" << endl;
+                cerr << "Error: Output file path must be provided after -o" <<
+                    endl;
+                cerr << "Usage: " << argv[0] <<
+                    "[-v] [-d <dump_log_file>] [-o <verilog_file>] <input_file>"
+                    << endl;
                 return 1;
             }
 
