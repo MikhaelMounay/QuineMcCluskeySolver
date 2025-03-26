@@ -8,6 +8,8 @@ using namespace std;
 #include "../term/Term.h"
 
 class ImplicantsTable {
+    friend class ImplicantsTableTest;
+
 private:
     Logger* log;
 
@@ -19,10 +21,9 @@ private:
     // Helpers
     static string getExpressionFromBinary(const string& binaryValue,
                                           const vector<char>& variables);
-
     void createAndSimplifyTable();
-    void eliminateDominatedRows();
-    void eliminateDominatedColumns();
+    bool eliminateDominatedRows();
+    bool eliminateDominatedColumns();
     void printTable();
 
 public:

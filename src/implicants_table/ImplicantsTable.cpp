@@ -1,24 +1,24 @@
 #include "ImplicantsTable.h"
 
-#include <iostream>
-
 using namespace std;
 
 // Constructors
 ImplicantsTable::ImplicantsTable() {
+    log = new Logger();
+
     primeImps = {};
     minterms = {};
     numberOfVariables = 0;
     table = {};
-    log = new Logger();
 }
 
 ImplicantsTable::ImplicantsTable(vector<Term> PrimeImps,
                                  vector<Term> Minterms, int NumberOfVariables) {
+    log = new Logger;
+
     primeImps = move(PrimeImps);
     minterms = move(Minterms);
     numberOfVariables = NumberOfVariables;
-    log = new Logger();
 
     createAndSimplifyTable();
 }
@@ -40,14 +40,29 @@ void ImplicantsTable::createAndSimplifyTable() {
         }
     }
 
+    *log << "[ImplicantsTable] Prime Implicants Chart: " << endl;
     printTable();
-    eliminateDominatedRows();
-    printTable();
-    eliminateDominatedColumns();
-    printTable();
+
+    bool repeatFlag = false;
+    do {
+        repeatFlag = eliminateDominatedRows();
+        *log <<
+            "[ImplicantsTable] Prime Implicants Chart after dominated rows elimination: "
+            << endl;
+        printTable();
+        if (!repeatFlag) {
+            repeatFlag = eliminateDominatedColumns();
+        } else {
+            eliminateDominatedColumns();
+        }
+        *log <<
+            "[ImplicantsTable] Prime Implicants Chart after dominated columns elimination: "
+            << endl;
+        printTable();
+    } while (repeatFlag);
 }
 
-void ImplicantsTable::eliminateDominatedRows() {
+bool ImplicantsTable::eliminateDominatedRows() {
     int numRows = table.size();
     int numCols = table[0].size();
 
@@ -59,8 +74,8 @@ void ImplicantsTable::eliminateDominatedRows() {
             continue;
         }
 
-        for (int j = i + 1; j < numRows; j++) {
-            if (dominated[j]) {
+        for (int j = 0; j < numRows; j++) {
+            if (i == j || dominated[j]) {
                 continue;
             }
 
@@ -74,21 +89,26 @@ void ImplicantsTable::eliminateDominatedRows() {
             }
 
             if (isDominated) {
-                dominated[j] = true; // Mark row j as dominated
+                dominated[i] = true; // Mark row j as dominated
             }
         }
     }
 
     // Remove dominated rows from the chart
+    *log << "[ImplicantsTable] Dominated Rows: ";
     for (int i = numRows - 1; i >= 0; i--) {
         if (dominated[i]) {
+            *log << i << " ";
             table.erase(table.begin() + i);
             primeImps.erase(primeImps.begin() + i);
         }
     }
+    *log << endl;
+
+    return (numRows != table.size());
 }
 
-void ImplicantsTable::eliminateDominatedColumns() {
+bool ImplicantsTable::eliminateDominatedColumns() {
     int numRows = table.size();
     int numCols = table[0].size();
 
@@ -96,10 +116,14 @@ void ImplicantsTable::eliminateDominatedColumns() {
 
     // Compare each column with every other column to find dominated columns
     for (int j = 0; j < numCols; j++) {
-        if (dominated[j]) continue;
+        if (dominated[j]) {
+            continue;
+        }
 
-        for (int k = j + 1; k < numCols; k++) {
-            if (dominated[k]) continue;
+        for (int k = 0; k < numCols; k++) {
+            if (j == k || dominated[k]) {
+                continue;
+            }
 
             // If column j dominates column k (is covered by more or equal implicants)
             bool isDominated = true;
@@ -111,20 +135,25 @@ void ImplicantsTable::eliminateDominatedColumns() {
             }
 
             if (isDominated) {
-                dominated[k] = true; // Mark column k as dominated
+                dominated[j] = true; // Mark column k as dominated
             }
         }
     }
 
     // Remove dominated columns from the chart
+    *log << "[ImplicantsTable] Dominated Columns: ";
     for (int j = numCols - 1; j >= 0; j--) {
         if (dominated[j]) {
+            *log << j << " ";
             for (int i = 0; i < numRows; i++) {
                 table[i].erase(table[i].begin() + j);
             }
             minterms.erase(minterms.begin() + j);
         }
     }
+    *log << endl;
+
+    return (numCols != table[0].size());
 }
 
 string ImplicantsTable::getExpressionFromBinary(const string& binaryValue,
@@ -142,11 +171,24 @@ string ImplicantsTable::getExpressionFromBinary(const string& binaryValue,
 
 void ImplicantsTable::printTable() {
     for (int i = 0; i < table.size(); i++) {
+        if (i == 0) {
+            for (int j = 0; j < numberOfVariables * 1.5; j++) {
+                *log << " ";
+            }
+            for (int j = 0; j < minterms.size(); j++) {
+                *log << minterms[j].getDecimalValue() << " ";
+            }
+            *log << endl;
+        }
+
+        *log << primeImps[i].getBinaryValue() << " | ";
+
         for (int j = 0; j < table[i].size(); j++) {
             *log << table[i][j] << " ";
         }
         *log << endl;
     }
+    *log << endl;
 }
 
 // Setters

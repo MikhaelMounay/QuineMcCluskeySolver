@@ -13,7 +13,8 @@ QuineMcTable::QuineMcTable(vector<Term> Minterms, int NumberOfVariables) {
     log = new Logger;
 
     minterms.assign(Minterms.begin(), Minterms.end());
-    _minterms.assign(Minterms.begin(), Minterms.end()); // Just for logging & debugging purposes
+    _minterms.assign(Minterms.begin(), Minterms.end());
+    // Just for logging & debugging purposes
     numberOfVariables = NumberOfVariables;
 
     createTable();

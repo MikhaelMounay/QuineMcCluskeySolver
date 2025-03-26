@@ -15,7 +15,7 @@ Term::Term() {
 }
 
 Term::Term(int DecimalValue, int numOfVariables) {
-    log = new Logger;
+    log = new Logger();
 
     decimalValue = DecimalValue;
     binaryValue = convertDecToBin(numOfVariables);
@@ -128,8 +128,10 @@ bool Term::operator==(const Term& other) {
 
 // Utils
 void Term::_logData() {
-    *log << "[Term] Decimal value: " << decimalValue << " | Binary value: " << binaryValue
-        << "OnesCount: " << onesCount << " | isCombined : " << isCombined << endl;
+    *log << "[Term] Decimal value: " << decimalValue << " | Binary value: " <<
+        binaryValue
+        << " | OnesCount: " << onesCount << " | isCombined : " << isCombined <<
+        endl;
     *log << "  coveredTerms : ";
     for (auto it = coveredTerms.begin(); it != coveredTerms.end(); it++) {
         *log << *it << " ";
