@@ -1,0 +1,4 @@
+3
+m1,m2,m5,m6,m7
+d
+B'C + BC' + AC, B'C + BC' + AB
