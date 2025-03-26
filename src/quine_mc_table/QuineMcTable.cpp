@@ -25,6 +25,7 @@ QuineMcTable::QuineMcTable(vector<Term> Minterms, int NumberOfVariables) {
 
 // Setters
 void QuineMcTable::_setLogger(Logger* logger) {
+    delete log;
     log = logger;
 }
 

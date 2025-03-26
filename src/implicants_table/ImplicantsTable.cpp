@@ -193,6 +193,7 @@ void ImplicantsTable::printTable() {
 
 // Setters
 void ImplicantsTable::_setLogger(Logger* logger) {
+    delete log;
     log = logger;
 }
 

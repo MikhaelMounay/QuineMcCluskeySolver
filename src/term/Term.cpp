@@ -76,6 +76,7 @@ set<int> Term::getCoveredTerms() {
 
 // Assigns a new logger instance to the term
 void Term::_setLogger(Logger* logger) {
+    delete log;
     log = logger;
 }
 // Sets the combined flag

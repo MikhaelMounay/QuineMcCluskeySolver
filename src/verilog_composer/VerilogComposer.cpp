@@ -128,6 +128,7 @@ string VerilogComposer::getVerilogCode() {
 
 // Setters
 void VerilogComposer::_setLogger(Logger* logger) {
+    delete log;
     log = logger;
 }
 
