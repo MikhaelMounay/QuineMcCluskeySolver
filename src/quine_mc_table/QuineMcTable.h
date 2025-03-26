@@ -15,6 +15,7 @@ private:
 
     int numberOfVariables;
     vector<Term> minterms;
+    vector<Term> _minterms;
     vector<Term> primeImps;
     vector<vector<string>> table;
 
@@ -24,6 +25,9 @@ private:
     void sortMintermsByOnes();
     static bool compareTerms(Term& a, Term& b);
     vector<Term> combineTerms();
+
+    // Utils
+    void _logData();
 
 public:
     // Constructors
