@@ -14,7 +14,7 @@ This C++ application is designed to minimize Boolean functions represented by mi
 - **C++ Compiler**: A C++ compiler (e.g., GCC) is required to build the application.
 - **Input File Format**: The input file should have three lines:
   1. The number of variables.
-  2. Minterms (indicated by 'm') or maxterms (indicated by 'M'), separated by commas.
+  2. Minterms (indicated by 'm')
   3. Don't-care terms (indicated by 'd'), separated by commas.
 
 ## Building the Application
@@ -23,17 +23,17 @@ This C++ application is designed to minimize Boolean functions represented by mi
 2. Navigate to the project directory.
 3. Compile the source code using a C++ compiler. For example, with GCC:
    ```bash
-   g++ -o boolean_minimizer main.cpp
+   // TODO:
    ```
 4. Run the application:
    ```bash
-   ./boolean_minimizer
+   // TODO:
    ```
 
 ## Using the Application
 
-1. Prepare an input file named `input.txt` in the same directory as the executable. The file should be formatted as described above.
-2. Run the application. It will read from `input.txt` and print the prime implicants, essential prime implicants, minimized Boolean expression, and the Verilog module.
+1. 
+2. 
 
 ## Example Input File
 
@@ -47,15 +47,6 @@ This example specifies a Boolean function with 3 variables, minterms 1, 3, 6, an
 
 Output
 
-The application will display the following:
-- **Prime Implicants**: Binary representation and covered minterms/don't-care terms.
-- **Essential Prime Implicants**: Binary representation and covered minterms.
-- **Minimized Boolean Expression**: Simplified Boolean expression.
-- **Verilog Module**: A basic Verilog module implementing the minimized expression.
+---
 
-## Bonus Feature
-
-The application includes a bonus feature to generate a Verilog module based on the minimized Boolean expression.
-
-
-
+## Contributions
