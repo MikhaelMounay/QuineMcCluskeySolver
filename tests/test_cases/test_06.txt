@@ -1,4 +1,4 @@
-6
-m1,m3,m7,m9,m13,m15
-d2,d6
-A'B'D'E'F + A'B'CDF + A'B'C'E , A'B'C'D'F + A'B'CE'F + A'B'DEF
+3
+m1,m3,m6,m7
+d0,d5
+AB + C

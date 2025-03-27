@@ -32,7 +32,7 @@ set<string> getExpectedResult(const string& testFilepath) {
 
 // Helper function to run test cases
 bool runTestCase(const string& testFilepath) {
-    Logger log{&cout};
+    Logger log{};
     IOHandler ioHandler(&log, testFilepath);
     string result = ioHandler.resolveMinimizedExpression();
 
@@ -60,9 +60,9 @@ TEST(MainTest, TestCase05) {
     EXPECT_EXIT(runTestCase("../../tests/test_cases/test_05.txt"), ::testing::ExitedWithCode(1), "minterms and don't cares shouldn't overlap");
 }
 
-// TEST(MainTest, TestCase06) {
-//     EXPECT_TRUE(runTestCase("../../tests/test_cases/test_06.txt"));
-// }
+TEST(MainTest, TestCase06) {
+    EXPECT_TRUE(runTestCase("../../tests/test_cases/test_06.txt"));
+}
 
 TEST(MainTest, TestCase07) {
     EXPECT_TRUE(runTestCase("../../tests/test_cases/test_07.txt"));
