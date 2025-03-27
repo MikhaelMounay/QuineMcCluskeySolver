@@ -1,0 +1,4 @@
+20
+m3,m12,m45,m102,m500
+d5,d20,d75
+A'B'C'D'E'F'G'H'I'J'K'L'M'N'O'P'Q'R'ST + A'B'C'D'E'F'G'H'I'J'K'L'M'N'O'P'QRS'T' + A'B'C'D'E'F'G'H'I'J'K'L'M'N'OP'QRS'T + A'B'C'D'E'F'G'H'I'J'K'L'M'NOP'Q'RST' + A'B'C'D'E'F'G'H'I'J'K'LMNOPQ'RS'T'

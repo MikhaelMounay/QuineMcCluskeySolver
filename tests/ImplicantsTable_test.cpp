@@ -6,13 +6,14 @@
 
 class ImplicantsTableTest : public ::testing::Test {
 private:
-    vector<Term> primeImps = {Term(log, "00-1", {1, 3}),
-                              Term(log, "001-", {2, 3})};
-    vector<Term> minterms = {Term(log, 1, 4), Term(log, 2, 4), Term(log, 3, 4)};
+    Logger* logger = new Logger;
+    vector<Term> primeImps = {Term(logger, "00-1", {1, 3}),
+                              Term(logger, "001-", {2, 3})};
+    vector<Term> minterms = {Term(logger, 1, 4), Term(logger, 2, 4), Term(logger, 3, 4)};
     ImplicantsTable table;
 
 protected:
-    Logger* log;
+    Logger* log = logger;
 
     void SetUp() override {
         table = ImplicantsTable(log, primeImps, minterms, 4);
@@ -62,13 +63,14 @@ TEST_F(ImplicantsTableTest, BooleanFunction3) {
                              Term(log, 10, numVars), Term(log, 12, numVars),
                              Term(log, 13, numVars), Term(log, 14, numVars),
                              Term(log, 15, numVars)};
+
     ImplicantsTable table = ImplicantsTable(log, primeImps, minterms, numVars);
 
     set<string> possibleExpressions = {
-        "B'D' + BD + CD' + AD'",
-        "B'D' + BD + CD' + AB",
-        "B'D' + BD + AD' + BC",
-        "B'D' + BD + BC + AB",
+        "B'D' + CD' + AD' + BD",
+        "B'D' + CD' + AB + BD",
+        "B'D' + AD' + BC + BD",
+        "B'D' + BC + AB + BD",
     };
     EXPECT_TRUE(possibleExpressions.count(table.getMinimizedExpression()) > 0);
 }

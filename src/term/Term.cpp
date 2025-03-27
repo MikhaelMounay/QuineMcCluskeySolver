@@ -1,6 +1,8 @@
 #include "Term.h"
 #include <bitset>
 #include <algorithm>
+#include <cmath>
+#include <iostream>
 #include <utility>
 
 // Constructor
@@ -42,6 +44,11 @@ Term::Term(Logger* Log, string BinaryValue, set<int> CoveredTerms) {
 // Helpers
 // Converts the decimal value to a binary string with a fixed number of bits
 string Term::convertDecToBin(int numOfVariables) {
+    // Validating that number of bits can hold the value
+    if (numOfVariables < log2(decimalValue)) {
+        log->fatal("[Term] the decimal value " + to_string(decimalValue) + " is too large to be represented in " + to_string(numOfVariables) + " bits");
+    }
+
     // Convert to a 20-bit binary string (max number of variables supported)
     string binaryStr = bitset<20>(decimalValue).to_string();
     // Extract only the required number of bits for the given number of variables
@@ -124,7 +131,7 @@ Term Term::combineWith(Term* otherTerm) {
     combined = true;
     otherTerm->setCombined(true);
 
-    return Term{combinedBinary, newCoveredTerms};
+    return Term{log, combinedBinary, newCoveredTerms};
 }
 
 // Checks if this term covers another term (based on decimal values)

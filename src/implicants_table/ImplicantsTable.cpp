@@ -1,5 +1,7 @@
 #include "ImplicantsTable.h"
 
+#include <algorithm>
+#include <iostream>
 using namespace std;
 
 // Constructors
@@ -89,7 +91,7 @@ bool ImplicantsTable::eliminateDominatedRows() {
             }
 
             if (isDominated) {
-                dominated[i] = true; // Mark row j as dominated
+                dominated[j] = true; // Mark row j as dominated
             }
         }
     }
@@ -156,6 +158,87 @@ bool ImplicantsTable::eliminateDominatedColumns() {
     return (numCols != table[0].size());
 }
 
+// TODO: needs a bit of tweaking
+vector<Term> ImplicantsTable::applyPetricksMethod() {
+    int numRows = table.size();
+    int numCols = table[0].size();
+    vector<vector<int>> terms(numCols);
+
+    // Constructing Boolean expression as a sum of products
+    for (int j = 0; j < numCols; j++) {
+        for (int i = 0; i < numRows; i++) {
+            if (table[i][j]) {
+                terms[j].push_back(i);
+            }
+        }
+
+        *log << "[Petrick'sMethod] Term " << j << ": ";
+        for (int k = 0; k < terms[j].size(); k++) {
+            *log << terms[j][k] << " ";
+        }
+        *log << endl << endl;
+    }
+
+    // Generating all possible product terms
+    vector<set<int>> products = { {terms[0].begin(), terms[0].end()} };
+    for (int i = 1; i < numCols; i++) {
+        vector<set<int>> newProducts;
+
+        for (int j = 0; j < products.size(); j++) {
+            for (int k = 0; k < terms[i].size(); k++) {
+                set<int> newProd = products[j];
+
+                newProd.insert(terms[i][k]);
+                newProducts.push_back(newProd);
+            }
+        }
+
+        // Remove duplicates within newProducts
+        // Not actually need; just for debugging purposes
+        // Could be removed to enhance performance
+        set<set<int>> uniqueProducts(newProducts.begin(), newProducts.end());
+        products.assign(uniqueProducts.begin(), uniqueProducts.end());
+        // products = move(newProducts);
+
+        *log << "[PetricksMethod] Products after step " << i << ": ";
+        for (int k = 0; k < products.size(); k++) {
+            *log << "{ ";
+            for (auto it = products[k].begin(); it != products[k].end(); it++) {
+                *log << *it << " ";
+            }
+            *log << "} ";
+        }
+        *log << endl << endl;
+    }
+
+    // Finding the minimal product terms
+    int minSize = INT_MAX;
+    vector<set<int>> minimalProducts;
+
+    for (int i = 0; i < products.size(); i++) {
+        if (products[i].size() < minSize) {
+            minSize = products[i].size();
+            minimalProducts.clear();
+            minimalProducts.push_back(products[i]);
+        } else if (products[i].size() == minSize) {
+            minimalProducts.push_back(products[i]);
+        }
+    }
+
+    set<int> bestCover = minimalProducts[0]; // Could return all possible if needed
+    for (auto it = bestCover.begin(); it != bestCover.end(); it++) {
+        *log << *it << " ";
+    }
+    *log << endl << endl;
+
+    vector<Term> essentialImplicants;
+    for (auto it = bestCover.begin(); it != bestCover.end(); it++) {
+        essentialImplicants.push_back(primeImps[*it]);
+    }
+
+    return essentialImplicants;
+}
+
 string ImplicantsTable::getExpressionFromBinary(const string& binaryValue,
                                                 const vector<char>& variables) {
     stringstream expression;
@@ -206,9 +289,16 @@ string ImplicantsTable::getMinimizedExpression() {
         variables[i] = static_cast<char>(65 + i);
     }
 
-    for (int i = 0; i < primeImps.size(); i++) {
-        string binaryValue = primeImps[i].getBinaryValue();
+    vector<Term> essentialImplicants = applyPetricksMethod();
+
+    for (int i = 0; i < essentialImplicants.size(); i++) {
+        string binaryValue = essentialImplicants[i].getBinaryValue();
         string expression = getExpressionFromBinary(binaryValue, variables);
+
+        if (expression.empty()) {
+            *log << "[ImplicantsTable] Minimized Expression: " << 1 << endl;
+            return "1";
+        }
 
         expressions.push_back(expression);
     }
@@ -217,6 +307,8 @@ string ImplicantsTable::getMinimizedExpression() {
     for (int i = 1; i < expressions.size(); i++) {
         minimizedExpression += " + " + expressions[i];
     }
+
+    *log << "[ImplicantsTable] Minimized Expression: " << minimizedExpression << endl;
 
     return minimizedExpression;
 }

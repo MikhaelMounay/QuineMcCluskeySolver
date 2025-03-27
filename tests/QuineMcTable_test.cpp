@@ -5,12 +5,12 @@
 
 class QuineMcTableTest : public ::testing::Test {
 private:
-    vector<Term> minterms = {Term(log, 0b1010, 4), Term(log, 0b1000, 4), Term(log, 0b1100, 4)};
+    Logger* logger = new Logger;
+    vector<Term> minterms = {Term(logger, 0b1010, 4), Term(logger, 0b1000, 4), Term(logger, 0b1100, 4)};
     QuineMcTable QMTable;
 
 protected:
-    Logger* log;
-
+    Logger* log = logger;
     void SetUp() override {
         QMTable = QuineMcTable(log, minterms, 4);
     }

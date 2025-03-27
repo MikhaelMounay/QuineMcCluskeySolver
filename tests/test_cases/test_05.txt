@@ -1,0 +1,4 @@
+20
+m100
+d100
+Error: 100 cannot be a minterm and a don't-care term at the same time. i.e., minterms and don't cares shouldn't overlap!

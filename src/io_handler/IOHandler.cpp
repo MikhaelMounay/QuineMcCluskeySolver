@@ -1,7 +1,7 @@
 #include "IOHandler.h"
 
 #include <fstream>
-#include <iostream>
+#include<algorithm>
 using namespace std;
 
 #include "../implicants_table/ImplicantsTable.h"
@@ -21,13 +21,14 @@ IOHandler::IOHandler(Logger* Log, string InputFilepath) {
     inputFilepath = move(InputFilepath);
 
     numberOfVariables = 0;
+    readInputFile();
 }
 
 IOHandler::IOHandler(Logger* Log, string InputFilepath, string OutputFilepath) {
     log = Log;
 
-    string inputFilepath = move(InputFilepath);
-    string outputFilepath = move(OutputFilepath);
+    inputFilepath = move(InputFilepath);
+    outputFilepath = move(OutputFilepath);
 
     numberOfVariables = 0;
     readInputFile();
@@ -37,9 +38,9 @@ IOHandler::IOHandler(Logger* Log, string InputFilepath, string OutputFilepath,
                      string VerilogFile) {
     log = Log;
 
-    string inputFilepath = move(InputFilepath);
-    string outputFilepath = move(OutputFilepath);
-    string verilogFilepath = move(VerilogFile);
+    inputFilepath = move(InputFilepath);
+    outputFilepath = move(OutputFilepath);
+    verilogFilepath = move(VerilogFile);
 
     numberOfVariables = 0;
     readInputFile();
@@ -49,10 +50,10 @@ IOHandler::IOHandler(Logger* Log, string InputFilepath, string OutputFilepath,
                      string VerilogFile, string LogFilepath) {
     log = Log;
 
-    string inputFilepath = move(InputFilepath);
-    string outputFilepath = move(OutputFilepath);
-    string logFilepath = move(LogFilepath);
-    string verilogFilepath = move(VerilogFile);
+    inputFilepath = move(InputFilepath);
+    outputFilepath = move(OutputFilepath);
+    logFilepath = move(LogFilepath);
+    verilogFilepath = move(VerilogFile);
 
     numberOfVariables = 0;
     readInputFile();
@@ -62,29 +63,56 @@ IOHandler::IOHandler(Logger* Log, string InputFilepath, string OutputFilepath,
 void IOHandler::readInputFile() {
     ifstream inputFile(inputFilepath);
     if (!inputFile.is_open()) {
-        cerr << "Error opening file " << inputFilepath << endl;
-        exit(1);
+        log->fatal("Error opening file " + inputFilepath);
+    }
+
+    if (inputFile.peek() == ifstream::traits_type::eof()) {
+        log->fatal("File " + inputFilepath + " is empty");
     }
 
     // Read the number of variables
     inputFile >> numberOfVariables;
 
+    // Validation on numberOfVariables
+    if (numberOfVariables == 0) {
+        log->fatal("Error: please provide the number of variables");
+    }
+    if (numberOfVariables > 20) {
+        log->fatal("Error: max supported number of variables is 20");
+    }
+    inputFile.get(); // To skip the '\n' after
+
     // Read the minterms
     string line;
-    inputFile >> line;
+    getline(inputFile, line);
+
+    // Validation on numberOfVariables
+    if (line.empty() || line == "m") {
+        log->fatal("Error: please provide a valid input for minterms");
+    }
+
     stringstream ss(line);
     string term;
-
     while (getline(ss, term, ',')) {
         minterms.emplace_back(log, stoi(term.substr(1)), numberOfVariables);
     }
 
     // Read the don't-cares
-    inputFile >> line;
-    ss.seekp(0);
+    getline(inputFile, line);
+    ss.str(line);
 
-    while (getline(ss, term, ',')) {
-        dontcares.emplace_back(log, stoi(term.substr(1)), numberOfVariables);
+    if (!line.empty() && line != "d") {
+        ss.seekg(0);
+        ss.clear();
+
+        while (getline(ss, term, ',')) {
+            Term tempTerm(log, stoi(term.substr(1)), numberOfVariables);
+            if (find(minterms.begin(), minterms.end(), tempTerm) == minterms.end()) {
+                dontcares.emplace_back(log, stoi(term.substr(1)), numberOfVariables);
+            } else {
+                log->fatal("Error: " + term.substr(1) + " cannot be a minterm and a don't-care term at the same time. i.e., minterms and don't cares shouldn't overlap!");
+            }
+        }
     }
 
     inputFile.close();
@@ -119,13 +147,13 @@ bool IOHandler::writeToOutputFiles() {
     if (!outputFilepath.empty()) {
         ofstream outputFile(outputFilepath);
         if (!outputFile.is_open()) {
-            cerr << "Error writing to file " << outputFilepath << endl;
+            log->fatal("Error writing to file " + outputFilepath);
             return false;
         }
 
         ifstream inputFile(inputFilepath);
         if (!inputFile.is_open()) {
-            cerr << "Error opening file " << inputFilepath << endl;
+            log->fatal("Error opening file " + inputFilepath);
             return false;
         }
 
@@ -143,7 +171,7 @@ bool IOHandler::writeToOutputFiles() {
 
         ofstream verilogFile(verilogFilepath);
         if (!verilogFile.is_open()) {
-            cerr << "Error writing to file " << verilogFilepath << endl;
+            log->fatal("Error writing to file " + verilogFilepath);
             return false;
         }
 
@@ -155,7 +183,7 @@ bool IOHandler::writeToOutputFiles() {
     if (!logFilepath.empty()) {
         ofstream logFile(logFilepath);
         if (!logFile.is_open()) {
-            cerr << "Error writing to file " << logFilepath << endl;
+            log->fatal("Error writing to file " + logFilepath);
             return false;
         }
 

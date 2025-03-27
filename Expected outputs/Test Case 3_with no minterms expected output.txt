@@ -1,2 +1,0 @@
-Test Case 3_with no don't cares expected output
-Error

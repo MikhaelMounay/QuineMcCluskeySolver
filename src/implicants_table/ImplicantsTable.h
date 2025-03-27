@@ -24,6 +24,7 @@ private:
     void createAndSimplifyTable();
     bool eliminateDominatedRows();
     bool eliminateDominatedColumns();
+    vector<Term> applyPetricksMethod();
     void printTable();
 
 public:

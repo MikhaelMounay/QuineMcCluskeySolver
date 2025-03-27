@@ -18,6 +18,10 @@ public:
     ostream* get_ostream();
     string toString();
 
+    // Methods
+    // Prints the given msg, saves the log, and exits the program directly
+    void fatal(const string& msg);
+
     // Operator Overloading
     template <typename T>
     Logger& operator<<(const T& a) {

@@ -1,6 +1,7 @@
 #include "Logger.h"
 
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 // Constructors
@@ -19,4 +20,24 @@ ostream* Logger::get_ostream() {
 
 string Logger::toString() {
     return _oss.str();
+}
+
+void Logger::fatal(const string& msg) {
+    if (stream != nullptr) {
+        (*stream) << msg << endl;
+    }
+
+    if (stream != &_oss) {
+        _oss << msg << endl;
+    }
+
+    cerr << msg << endl;
+
+    ofstream logFile("QuineMcCluskeySolver.log.txt");
+    if (logFile.is_open()) {
+        logFile << toString() << endl;
+        logFile.close();
+    }
+
+    exit(1);
 }

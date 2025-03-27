@@ -1,0 +1,4 @@
+20
+m1,m10,m20,m30,m40,m50,m60,m70,m80,m90
+d
+A'B'C'D'E'F'G'H'I'J'K'L'M'N'O'P'Q'R'S'T + A'B'C'D'E'F'G'H'I'J'K'L'M'N'O'P'QR'ST' + A'B'C'D'E'F'G'H'I'J'K'L'M'N'O'PQ'RS'T' + A'B'C'D'E'F'G'H'I'J'K'L'M'N'OP'QR'S'T' + A'B'C'D'E'F'G'H'I'J'K'L'M'NO'PQ'R'S'T' + A'B'C'D'E'F'G'H'I'J'K'L'M'N'OPQ'R'ST' + A'B'C'D'E'F'G'H'I'J'K'L'M'NO'P'Q'RST' + A'B'C'D'E'F'G'H'I'J'K'L'M'N'O'PQRST' + A'B'C'D'E'F'G'H'I'J'K'L'M'N'OPQRS'T' + A'B'C'D'E'F'G'H'I'J'K'L'M'NO'PQR'ST'
