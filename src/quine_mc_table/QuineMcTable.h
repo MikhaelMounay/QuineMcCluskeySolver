@@ -15,7 +15,7 @@ private:
 
     int numberOfVariables;
     vector<Term> minterms;
-    vector<Term> _minterms;
+    vector<Term> _minterms; // Just for logging & debugging purposes
     vector<Term> primeImps;
     vector<vector<string>> table;
 
@@ -32,7 +32,7 @@ private:
 public:
     // Constructors
     QuineMcTable();
-    QuineMcTable(vector<Term> Minterms, int NumberOfVariables);
+    QuineMcTable(Logger* Log, vector<Term> Minterms, int NumberOfVariables);
 
     // Setters
     void _setLogger(Logger* logger);

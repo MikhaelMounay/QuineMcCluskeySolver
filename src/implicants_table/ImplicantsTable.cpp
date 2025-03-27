@@ -12,9 +12,9 @@ ImplicantsTable::ImplicantsTable() {
     table = {};
 }
 
-ImplicantsTable::ImplicantsTable(vector<Term> PrimeImps,
+ImplicantsTable::ImplicantsTable(Logger* Log, vector<Term> PrimeImps,
                                  vector<Term> Minterms, int NumberOfVariables) {
-    log = new Logger;
+    log = Log;
 
     primeImps = move(PrimeImps);
     minterms = move(Minterms);

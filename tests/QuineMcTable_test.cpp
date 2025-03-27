@@ -5,12 +5,14 @@
 
 class QuineMcTableTest : public ::testing::Test {
 private:
-    vector<Term> minterms = {Term(0b1010, 4), Term(0b1000, 4), Term(0b1100, 4)};
+    vector<Term> minterms = {Term(log, 0b1010, 4), Term(log, 0b1000, 4), Term(log, 0b1100, 4)};
     QuineMcTable QMTable;
 
 protected:
+    Logger* log;
+
     void SetUp() override {
-        QMTable = QuineMcTable(minterms, 4);
+        QMTable = QuineMcTable(log, minterms, 4);
     }
 
     void sortMintermsByOnes() {
@@ -32,8 +34,8 @@ TEST_F(QuineMcTableTest, DefaultConstructor) {
 }
 
 TEST_F(QuineMcTableTest, ConstructorWithMinterms) {
-    vector<Term> minterms = {Term(0b0001, 4), Term(0b0011, 4), Term(0b0111, 4)};
-    QuineMcTable table(minterms, 4);
+    vector<Term> minterms = {Term(log, 0b0001, 4), Term(log, 0b0011, 4), Term(log, 0b0111, 4)};
+    QuineMcTable table(log, minterms, 4);
     EXPECT_EQ(table.getPrimeImplicants().size(), 2);
     // Initial terms are prime implicants
 }
@@ -62,9 +64,9 @@ TEST_F(QuineMcTableTest, ConstructorWithMinterms) {
 // }
 
 TEST_F(QuineMcTableTest, Solve) {
-    vector<Term> minterms = {Term(0b0001, 4), Term(0b0010, 4), Term(0b0011, 4),
-                             Term(0b0100, 4)};
-    QuineMcTable table(minterms, 4);
+    vector<Term> minterms = {Term(log, 0b0001, 4), Term(log, 0b0010, 4), Term(log, 0b0011, 4),
+                             Term(log, 0b0100, 4)};
+    QuineMcTable table(log, minterms, 4);
     vector<Term> primeImplicants = table.getPrimeImplicants();
 
     EXPECT_EQ(primeImplicants.size(), 3);

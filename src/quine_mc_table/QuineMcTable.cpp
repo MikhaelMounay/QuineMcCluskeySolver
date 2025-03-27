@@ -9,8 +9,8 @@ QuineMcTable::QuineMcTable() {
     numberOfVariables = 0;
 }
 
-QuineMcTable::QuineMcTable(vector<Term> Minterms, int NumberOfVariables) {
-    log = new Logger;
+QuineMcTable::QuineMcTable(Logger* Log, vector<Term> Minterms, int NumberOfVariables) {
+    log = Log;
 
     minterms.assign(Minterms.begin(), Minterms.end());
     _minterms.assign(Minterms.begin(), Minterms.end());
@@ -25,7 +25,6 @@ QuineMcTable::QuineMcTable(vector<Term> Minterms, int NumberOfVariables) {
 
 // Setters
 void QuineMcTable::_setLogger(Logger* logger) {
-    delete log;
     log = logger;
 }
 
@@ -33,6 +32,7 @@ void QuineMcTable::_setLogger(Logger* logger) {
 // Create table to track combinable minterms
 void QuineMcTable::createTable() {
     table.resize(minterms.size(), vector<string>(minterms.size(), ""));
+
     for (int i = 0; i < minterms.size(); i++) {
         for (int j = i + 1; j < minterms.size(); j++) {
             if (minterms[i].canCombineWith(minterms[j])) {

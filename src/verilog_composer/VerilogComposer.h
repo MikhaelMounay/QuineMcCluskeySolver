@@ -17,16 +17,13 @@ private:
 public:
     // Constructors
     VerilogComposer();
-    VerilogComposer(string BoolExpression);
+    VerilogComposer(Logger* Log, string BoolExpression);
 
     // Getters
     string getVerilogCode();
 
     // Setters
     void _setLogger(Logger* logger);
-
-    // Methods
-    bool saveToFile(string filepath);
 };
 
 #endif //VERILOGCOMPOSER_H

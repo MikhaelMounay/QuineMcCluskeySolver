@@ -2,6 +2,7 @@
 #include <fstream>
 using namespace std;
 
+#include "io_handler/IOHandler.h"
 #include "logger/Logger.h"
 
 int main(int argc, char* argv[]) {
@@ -25,7 +26,8 @@ int main(int argc, char* argv[]) {
         if (string(argv[i]) == "-v") {
             verbose = true;
         } else if (string(argv[i]) == "-d") {
-            if (string(argv[i + 1]).empty() || string(argv[i + 1]).starts_with("-")) {
+            if (string(argv[i + 1]).empty() || string(argv[i + 1]).
+                starts_with("-")) {
                 cerr << "Error: Log file path must be provided after -d" <<
                     endl;
                 cout << "Usage: " << argv[0] <<
@@ -38,7 +40,8 @@ int main(int argc, char* argv[]) {
             logFilepath = string(argv[i + 1]);
             i++;
         } else if (string(argv[i]) == "-o") {
-            if (string(argv[i + 1]).empty() || string(argv[i + 1]).starts_with("-")) {
+            if (string(argv[i + 1]).empty() || string(argv[i + 1]).
+                starts_with("-")) {
                 cerr << "Error: Output file path must be provided after -o" <<
                     endl;
                 cout << "Usage: " << argv[0] <<
@@ -51,8 +54,11 @@ int main(int argc, char* argv[]) {
             outputFilepath = string(argv[i + 1]);
             i++;
         } else if (string(argv[i]) == "--verilog") {
-            if (string(argv[i + 1]).empty() || string(argv[i + 1]).starts_with("-")) {
-                cerr << "Error: Output Verilog file path must be provided after --verilog" <<
+            if (string(argv[i + 1]).empty() || string(argv[i + 1]).
+                starts_with("-")) {
+                cerr <<
+                    "Error: Output Verilog file path must be provided after --verilog"
+                    <<
                     endl;
                 cout << "Usage: " << argv[0] <<
                     "[-v] [-d <dump_log_file>] [-o <output_file>] [--verilog <verilog_file>] <input_file>"
@@ -66,9 +72,9 @@ int main(int argc, char* argv[]) {
         } else if (string(argv[i]).starts_with("-")) {
             cerr << "Error: Unknown flag: " << string(argv[i]) << endl;
             cout << "Usage: " << argv[0] <<
-                    "[-v] [-d <dump_log_file>] [-o <output_file>] [--verilog <verilog_file>] <input_file>"
-                    <<
-                    endl;
+                "[-v] [-d <dump_log_file>] [-o <output_file>] [--verilog <verilog_file>] <input_file>"
+                <<
+                endl;
             return 1;
         } else {
             inputFilepath = string(argv[i]);
@@ -83,24 +89,14 @@ int main(int argc, char* argv[]) {
         log = Logger(&cout);
     }
 
-    log << "Hello, World!\n";
-    // Read input file
+    // Reading, Processing Business Logic, and Writing to output destinations are handed to IOHandler
+    IOHandler ioHandler(&log, inputFilepath, outputFilepath, verilogFilepath,
+                        logFilepath);
+    cout << "F = " << ioHandler.resolveMinimizedExpression();
 
-    // Output to console
-
-    // Output to _minimized.txt file
-
-    // Output Verilog to .v file
-
-    // Write log to dump file
-    if (!outputFilepath.empty()) {
-        ofstream logFile(outputFilepath);
-        if (!logFile.is_open()) {
-            cerr << "Error: Could not open log file " << outputFilepath << endl;
-            return 1;
-        }
-        logFile << log.toString();
-        logFile.close();
+    if (!ioHandler.writeToOutputFiles()) {
+        cerr << "Error: Failed to write to output files" << endl;
+        return 1;
     }
 
     return 0;

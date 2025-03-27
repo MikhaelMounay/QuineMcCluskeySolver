@@ -13,7 +13,7 @@ VerilogComposer::VerilogComposer() {
     verilogCode = "";
 }
 
-VerilogComposer::VerilogComposer(string BoolExpression) {
+VerilogComposer::VerilogComposer(Logger* Log, string BoolExpression) {
     log = new Logger;
     boolExpression = BoolExpression;
     verilogCode = "";
@@ -128,23 +128,5 @@ string VerilogComposer::getVerilogCode() {
 
 // Setters
 void VerilogComposer::_setLogger(Logger* logger) {
-    delete log;
     log = logger;
-}
-
-// Methods
-bool VerilogComposer::saveToFile(string filepath) {
-    if (verilogCode.empty() || filepath.empty()) {
-        return false;
-    }
-
-    ofstream file(filepath);
-    if (!file.is_open()) {
-        return false;
-    }
-
-    file << verilogCode;
-    file.close();
-
-    return true;
 }

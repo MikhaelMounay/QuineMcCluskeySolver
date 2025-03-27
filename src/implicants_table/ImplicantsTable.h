@@ -29,7 +29,7 @@ private:
 public:
     // Constructors
     ImplicantsTable();
-    ImplicantsTable(vector<Term> PrimeImps, vector<Term> Minterms,
+    ImplicantsTable(Logger* Log, vector<Term> PrimeImps, vector<Term> Minterms,
                     int NumberOfVariables);
 
     // Setters

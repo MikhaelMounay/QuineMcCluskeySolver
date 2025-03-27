@@ -26,8 +26,8 @@ private:
 public:
     // Constructor
     Term();
-    Term(int DecimalValue, int numOfVariables);
-    Term(string BinaryValue, set<int> CoveredTerms);
+    Term(Logger* Log, int DecimalValue, int numOfVariables);
+    Term(Logger* Log, string BinaryValue, set<int> CoveredTerms);
 
     // Getters
     int getDecimalValue();
