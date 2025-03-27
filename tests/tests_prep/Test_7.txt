@@ -1,0 +1,4 @@
+12
+m5,m15,m23,m42,m56,m102,m203,m512
+d0,d3,d8,d21,d34,d99
+A'B'C'D'E'F'GHIJ'K'L' + A'B'C'D'E'F'G'H'IJKL + A'B'C'D'E'FGH'I'JKL' + A'B'C'D'EFG'H'IJ'KL + A'B'D'E'F'G'H'I'J'K'L' + A'B'C'D'E'F'G'I'JK'L + A'B'C'D'E'F'GH'J'KL' + A'B'C'D'E'F'G'HI'JL
