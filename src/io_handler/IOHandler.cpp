@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include<algorithm>
+#include <cmath>
 using namespace std;
 
 #include "../implicants_table/ImplicantsTable.h"
@@ -67,7 +68,7 @@ void IOHandler::readInputFile() {
     }
 
     if (inputFile.peek() == ifstream::traits_type::eof()) {
-        log->fatal("File " + inputFilepath + " is empty");
+        log->fatal("Error: File " + inputFilepath + " is empty");
     }
 
     // Read the number of variables
@@ -87,8 +88,9 @@ void IOHandler::readInputFile() {
     getline(inputFile, line);
 
     // Validation on minterms/maxterms
-    if (line.empty()|| line == "m"|| line == "M") {
-        log->fatal("Error: please provide a valid input for minterms or maxterms");
+    if (line.empty() || line == "m" || line == "M") {
+        log->fatal(
+            "Error: please provide a valid input for minterms or maxterms");
     }
 
     stringstream ss(line);
@@ -100,6 +102,10 @@ void IOHandler::readInputFile() {
 
     // Process the input terms
     while (getline(ss, term, ',')) {
+        // trimming the spaces around the term
+        term.erase(0, term.find_first_not_of(" \n\r\t"));
+        term.erase(term.find_last_not_of(" \n\r\t") + 1);
+
         if (term[0] == 'm') {
             minterms.emplace_back(log, stoi(term.substr(1)), numberOfVariables);
             termSet.insert(stoi(term.substr(1)));
@@ -113,10 +119,10 @@ void IOHandler::readInputFile() {
         }
     }
 
-
     // If both minterms and maxterms are provided together, throw an error
     if (isMintermProvided && isMaxtermProvided) {
-        log->fatal("Error: Cannot mix minterms and maxterms. Please provide only one.");
+        log->fatal(
+            "Error: Cannot mix minterms and maxterms. Please provide only one.");
     }
 
     // Read the don't-cares
@@ -127,13 +133,19 @@ void IOHandler::readInputFile() {
     set<int> dontcareSet;
     if (!line.empty() && line != "d") {
         while (getline(ss, term, ',')) {
+            // trimming the spaces around the term
+            term.erase(0, term.find_first_not_of(" \n\r\t"));
+            term.erase(term.find_last_not_of(" \n\r\t") + 1);
+
             int value = stoi(term.substr(1));
-            if (termSet.find(value) == termSet.end()) {
+            if (!termSet.contains(value)) {
                 dontcares.emplace_back(log, value, numberOfVariables);
                 dontcareSet.insert(value);
             } else {
-                log->fatal("Error: " + term.substr(1) + " cannot be a minterm and a don't-care term at the same time. i.e., minterms and don't cares shouldn't overlap!");
-                            }
+                log->fatal(
+                    "Error: " + term.substr(1) +
+                    " cannot be a minterm/maxterm and a don't-care term at the same time. i.e., minterms/maxterms and don't cares shouldn't overlap!");
+            }
         }
     }
 
@@ -141,16 +153,11 @@ void IOHandler::readInputFile() {
     if (isMaxtermProvided) {
         set<int> maxtermSet(maxterms.begin(), maxterms.end());
 
-        for (int i = 0; i < (1 << numberOfVariables); ++i) {
-            if (maxtermSet.find(i) == maxtermSet.end() && dontcareSet.find(i) == dontcareSet.end()) {
+        for (int i = 0; i < pow(2, numberOfVariables); i++) {
+            if (!maxtermSet.contains(i) && !dontcareSet.contains(i)) {
                 minterms.emplace_back(log, i, numberOfVariables);
             }
         }
-    }
-
-    // If no valid minterms or maxterms were provided, throw an error
-    if (minterms.empty()|| line == "m"|| line == "M") {
-        log->fatal("Error: please provide a valid input for minterms or maxterms");
     }
 
     inputFile.close();

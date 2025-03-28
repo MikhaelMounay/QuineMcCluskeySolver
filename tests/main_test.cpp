@@ -49,7 +49,9 @@ TEST(MainTest, TestCase02) {
 }
 
 TEST(MainTest, TestCase03) {
-    EXPECT_EXIT(runTestCase("../../tests/test_cases/test_03.txt"), ::testing::ExitedWithCode(1), "Error: please provide a valid input for minterms");
+    EXPECT_EXIT(runTestCase("../../tests/test_cases/test_03.txt"),
+                ::testing::ExitedWithCode(1),
+                "Error: please provide a valid input for minterms");
 }
 
 TEST(MainTest, TestCase04) {
@@ -57,7 +59,9 @@ TEST(MainTest, TestCase04) {
 }
 
 TEST(MainTest, TestCase05) {
-    EXPECT_EXIT(runTestCase("../../tests/test_cases/test_05.txt"), ::testing::ExitedWithCode(1), "minterms and don't cares shouldn't overlap");
+    EXPECT_EXIT(runTestCase("../../tests/test_cases/test_05.txt"),
+                ::testing::ExitedWithCode(1),
+                "minterms/maxterms and don't cares shouldn't overlap");
 }
 
 TEST(MainTest, TestCase06) {

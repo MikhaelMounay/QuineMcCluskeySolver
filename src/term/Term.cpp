@@ -46,7 +46,10 @@ Term::Term(Logger* Log, string BinaryValue, set<int> CoveredTerms) {
 string Term::convertDecToBin(int numOfVariables) {
     // Validating that number of bits can hold the value
     if (numOfVariables < log2(decimalValue)) {
-        log->fatal("[Term] the decimal value " + to_string(decimalValue) + " is too large to be represented in " + to_string(numOfVariables) + " bits");
+        log->fatal(
+            "[Term] the decimal value " + to_string(decimalValue) +
+            " is too large to be represented in " + to_string(numOfVariables) +
+            " bits");
     }
 
     // Convert to a 20-bit binary string (max number of variables supported)
@@ -150,7 +153,8 @@ bool Term::operator==(const Term& other) {
 void Term::_logData() {
     *log << "[Term] Decimal value: " << decimalValue << " | Binary value: " <<
         binaryValue
-        << " | OnesCount: " << onesCount << " | isCombined : " << isCombined() <<
+        << " | OnesCount: " << onesCount << " | isCombined : " << isCombined()
+        <<
         endl;
     *log << "  coveredTerms : ";
     for (auto it = coveredTerms.begin(); it != coveredTerms.end(); it++) {
