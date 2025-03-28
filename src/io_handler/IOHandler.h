@@ -17,6 +17,7 @@ private:
     string verilogFilepath;
 
     vector<Term> minterms;
+    vector<Term> maxterms;
     vector<Term> dontcares;
     int numberOfVariables;
     string minimizedExpression;

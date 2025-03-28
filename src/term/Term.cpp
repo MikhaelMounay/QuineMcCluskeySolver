@@ -150,7 +150,7 @@ bool Term::operator==(const Term& other) {
 void Term::_logData() {
     *log << "[Term] Decimal value: " << decimalValue << " | Binary value: " <<
         binaryValue
-        << " | OnesCount: " << onesCount << " | isCombined : " << isCombined <<
+        << " | OnesCount: " << onesCount << " | isCombined : " << isCombined() <<
         endl;
     *log << "  coveredTerms : ";
     for (auto it = coveredTerms.begin(); it != coveredTerms.end(); it++) {

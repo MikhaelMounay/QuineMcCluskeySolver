@@ -79,3 +79,23 @@ TEST(MainTest, TestCase09) {
 TEST(MainTest, TestCase10) {
     EXPECT_TRUE(runTestCase("../../tests/test_cases/test_10.txt"));
 }
+
+TEST(MainTest, TestCase11) {
+    EXPECT_TRUE(runTestCase("../../tests/test_cases/test_11.txt"));
+}
+
+TEST(MainTest, TestCase12) {
+    EXPECT_TRUE(runTestCase("../../tests/test_cases/test_12.txt"));
+}
+
+TEST(MainTest, TestCase13) {
+    EXPECT_TRUE(runTestCase("../../tests/test_cases/test_13.txt"));
+}
+
+TEST(MainTest, TestCase14) {
+    EXPECT_TRUE(runTestCase("../../tests/test_cases/test_14.txt"));
+}
+
+TEST(MainTest, TestCase15) {
+    EXPECT_TRUE(runTestCase("../../tests/test_cases/test_15.txt"));
+}

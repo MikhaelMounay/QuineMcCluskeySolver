@@ -82,41 +82,137 @@ void IOHandler::readInputFile() {
     }
     inputFile.get(); // To skip the '\n' after
 
-    // Read the minterms
+    // Read the minterms or maxterms
     string line;
     getline(inputFile, line);
 
-    // Validation on numberOfVariables
-    if (line.empty() || line == "m") {
-        log->fatal("Error: please provide a valid input for minterms");
+    // Validation on minterms/maxterms
+    if (line.empty()|| line == "m"|| line == "M") {
+        log->fatal("Error: please provide a valid input for minterms or maxterms");
     }
 
     stringstream ss(line);
     string term;
+    vector<int> maxterms;
+    set<int> termSet;
+    bool isMintermProvided = false;
+    bool isMaxtermProvided = false;
+
+    // Process the input terms
     while (getline(ss, term, ',')) {
-        minterms.emplace_back(log, stoi(term.substr(1)), numberOfVariables);
+        if (term[0] == 'm') {
+            minterms.emplace_back(log, stoi(term.substr(1)), numberOfVariables);
+            termSet.insert(stoi(term.substr(1)));
+            isMintermProvided = true;
+        } else if (term[0] == 'M') {
+            maxterms.push_back(stoi(term.substr(1)));
+            termSet.insert(stoi(term.substr(1)));
+            isMaxtermProvided = true;
+        } else {
+            log->fatal("Error: Invalid term format " + term);
+        }
+    }
+
+
+    // If both minterms and maxterms are provided together, throw an error
+    if (isMintermProvided && isMaxtermProvided) {
+        log->fatal("Error: Cannot mix minterms and maxterms. Please provide only one.");
     }
 
     // Read the don't-cares
     getline(inputFile, line);
+    ss.clear();
     ss.str(line);
 
+    set<int> dontcareSet;
     if (!line.empty() && line != "d") {
-        ss.seekg(0);
-        ss.clear();
-
         while (getline(ss, term, ',')) {
-            Term tempTerm(log, stoi(term.substr(1)), numberOfVariables);
-            if (find(minterms.begin(), minterms.end(), tempTerm) == minterms.end()) {
-                dontcares.emplace_back(log, stoi(term.substr(1)), numberOfVariables);
+            int value = stoi(term.substr(1));
+            if (termSet.find(value) == termSet.end()) {
+                dontcares.emplace_back(log, value, numberOfVariables);
+                dontcareSet.insert(value);
             } else {
                 log->fatal("Error: " + term.substr(1) + " cannot be a minterm and a don't-care term at the same time. i.e., minterms and don't cares shouldn't overlap!");
+                            }
+        }
+    }
+
+    // If maxterms were provided, convert them into minterms
+    if (isMaxtermProvided) {
+        set<int> maxtermSet(maxterms.begin(), maxterms.end());
+
+        for (int i = 0; i < (1 << numberOfVariables); ++i) {
+            if (maxtermSet.find(i) == maxtermSet.end() && dontcareSet.find(i) == dontcareSet.end()) {
+                minterms.emplace_back(log, i, numberOfVariables);
             }
         }
     }
 
+    // If no valid minterms or maxterms were provided, throw an error
+    if (minterms.empty()|| line == "m"|| line == "M") {
+        log->fatal("Error: please provide a valid input for minterms or maxterms");
+    }
+
     inputFile.close();
 }
+
+// void IOHandler::readInputFile() {
+//     ifstream inputFile(inputFilepath);
+//     if (!inputFile.is_open()) {
+//         log->fatal("Error opening file " + inputFilepath);
+//     }
+//
+//     if (inputFile.peek() == ifstream::traits_type::eof()) {
+//         log->fatal("File " + inputFilepath + " is empty");
+//     }
+//
+//     // Read the number of variables
+//     inputFile >> numberOfVariables;
+//
+//     // Validation on numberOfVariables
+//     if (numberOfVariables == 0) {
+//         log->fatal("Error: please provide the number of variables");
+//     }
+//     if (numberOfVariables > 20) {
+//         log->fatal("Error: max supported number of variables is 20");
+//     }
+//     inputFile.get(); // To skip the '\n' after
+//
+//     // Read the minterms
+//     string line;
+//     getline(inputFile, line);
+//
+//     // Validation on numberOfVariables
+//     if (line.empty() || line == "m") {
+//         log->fatal("Error: please provide a valid input for minterms");
+//     }
+//
+//     stringstream ss(line);
+//     string term;
+//     while (getline(ss, term, ',')) {
+//         minterms.emplace_back(log, stoi(term.substr(1)), numberOfVariables);
+//     }
+//
+//     // Read the don't-cares
+//     getline(inputFile, line);
+//     ss.str(line);
+//
+//     if (!line.empty() && line != "d") {
+//         ss.seekg(0);
+//         ss.clear();
+//
+//         while (getline(ss, term, ',')) {
+//             Term tempTerm(log, stoi(term.substr(1)), numberOfVariables);
+//             if (find(minterms.begin(), minterms.end(), tempTerm) == minterms.end()) {
+//                 dontcares.emplace_back(log, stoi(term.substr(1)), numberOfVariables);
+//             } else {
+//                 log->fatal("Error: " + term.substr(1) + " cannot be a minterm and a don't-care term at the same time. i.e., minterms and don't cares shouldn't overlap!");
+//             }
+//         }
+//     }
+//
+//     inputFile.close();
+// }
 
 // Setters
 void IOHandler::_setLogger(Logger* logger) {

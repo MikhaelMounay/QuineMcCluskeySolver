@@ -47,6 +47,17 @@ TEST(IOHandlerTest, SetInputFilePath) {
     EXPECT_EQ(ioHandler.resolveMinimizedExpression(),
               "AB + C");
 }
+//maxterm test
+TEST(IOHandlerTest, HandlesMaxterms) {
+    Logger log{};
+    bool createdSuccessfully = createTempFile("3\nM0,M1\nd2,d3");
+    EXPECT_TRUE(createdSuccessfully);
+
+    IOHandler ioHandler(&log, "temp_input.txt");
+
+    EXPECT_EQ(ioHandler.resolveMinimizedExpression(), "A");
+}
+
 
 // Test writing to output files
 TEST(IOHandlerTest, WriteToOutputFiles) {
