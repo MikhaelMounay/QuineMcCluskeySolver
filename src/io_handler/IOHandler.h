@@ -19,7 +19,7 @@ private:
     vector<Term> minterms;
     vector<Term> dontcares;
     int numberOfVariables;
-    string minimizedExpression;
+    vector<string> possibleMinimizedExpression;
     string verilogCode;
 
     // Helpers
@@ -40,7 +40,7 @@ public:
     void setInputFilePath(string InputFilePath);
 
     // Methods
-    string resolveMinimizedExpression();
+    vector<string> resolveMinimizedExpression();
     bool writeToOutputFiles();
 };
 

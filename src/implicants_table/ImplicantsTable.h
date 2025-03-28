@@ -24,7 +24,7 @@ private:
     void createAndSimplifyTable();
     bool eliminateDominatedRows();
     bool eliminateDominatedColumns();
-    vector<Term> applyPetricksMethod();
+    vector<vector<Term>> applyPetricksMethod();
     void printTable();
 
 public:
@@ -37,7 +37,7 @@ public:
     void _setLogger(Logger* logger);
 
     // Methods
-    string getMinimizedExpression();
+    vector<string> getMinimizedExpression();
 };
 
 #endif //IMPLICANTSTABLE_H

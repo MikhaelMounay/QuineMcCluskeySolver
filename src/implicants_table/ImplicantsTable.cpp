@@ -45,6 +45,9 @@ void ImplicantsTable::createAndSimplifyTable() {
     *log << "[ImplicantsTable] Prime Implicants Chart: " << endl;
     printTable();
 
+    // Note: in order to print all possible minimized expressions of a function
+    // eliminateDominatedRows() won't eliminate equal rows
+    // and equal rows are left to applyPetricksMethod to get all possible combinations
     bool repeatFlag = false;
     do {
         repeatFlag = eliminateDominatedRows();
@@ -79,6 +82,19 @@ bool ImplicantsTable::eliminateDominatedRows() {
         for (int j = 0; j < numRows; j++) {
             if (i == j || dominated[j]) {
                 continue;
+            }
+
+            // Check if rows i and j are equal
+            bool equalRows = true;
+            for (int k = 0; k < numCols; k++) {
+                if (table[i][k] != table[j][k]) {
+                    equalRows = false;
+                    break;
+                }
+            }
+
+            if (equalRows) {
+                break;
             }
 
             // If row i dominates row j (covers the same or more minterms)
@@ -159,7 +175,7 @@ bool ImplicantsTable::eliminateDominatedColumns() {
 }
 
 // TODO: needs a bit of tweaking
-vector<Term> ImplicantsTable::applyPetricksMethod() {
+vector<vector<Term>> ImplicantsTable::applyPetricksMethod() {
     int numRows = table.size();
     int numCols = table[0].size();
     vector<vector<int>> terms(numCols);
@@ -225,16 +241,17 @@ vector<Term> ImplicantsTable::applyPetricksMethod() {
         }
     }
 
-    set<int> bestCover = minimalProducts[0]; // Could return all possible if needed
-    for (auto it = bestCover.begin(); it != bestCover.end(); it++) {
-        *log << *it << " ";
-    }
-    *log << endl << endl;
+    // Could return a possible answer or all of them if needed
+    vector<vector<Term>> essentialImplicants(minimalProducts.size());
+    for (int i = 0; i < minimalProducts.size(); i++) {
+        for (auto it = minimalProducts[i].begin(); it != minimalProducts[i].end(); it++) {
+            essentialImplicants[i].push_back(primeImps[*it]);
 
-    vector<Term> essentialImplicants;
-    for (auto it = bestCover.begin(); it != bestCover.end(); it++) {
-        essentialImplicants.push_back(primeImps[*it]);
+            *log << *it << " ";
+        }
+        *log << endl;
     }
+    *log << endl;
 
     return essentialImplicants;
 }
@@ -281,34 +298,40 @@ void ImplicantsTable::_setLogger(Logger* logger) {
 }
 
 // Methods
-string ImplicantsTable::getMinimizedExpression() {
-    vector<string> expressions;
+vector<string> ImplicantsTable::getMinimizedExpression() {
+    vector<string> possibleMinimizedExpressions;
 
     vector<char> variables(numberOfVariables);
     for (int i = 0; i < numberOfVariables; i++) {
         variables[i] = static_cast<char>(65 + i);
     }
 
-    vector<Term> essentialImplicants = applyPetricksMethod();
+    vector<vector<Term>> essentialImplicants = applyPetricksMethod();
+
 
     for (int i = 0; i < essentialImplicants.size(); i++) {
-        string binaryValue = essentialImplicants[i].getBinaryValue();
-        string expression = getExpressionFromBinary(binaryValue, variables);
+        vector<string> expressionTerms;
 
-        if (expression.empty()) {
-            *log << "[ImplicantsTable] Minimized Expression: " << 1 << endl;
-            return "1";
+        for (int j = 0; j < essentialImplicants[i].size(); j++) {
+            string binaryValue = essentialImplicants[i][j].getBinaryValue();
+            string expressionTerm = getExpressionFromBinary(binaryValue, variables);
+
+            if (expressionTerm.empty()) {
+                *log << "[ImplicantsTable] Minimized Expression: " << 1 << endl;
+                return {"1"};
+            }
+
+            expressionTerms.push_back(expressionTerm);
         }
 
-        expressions.push_back(expression);
+        string minimizedExpression = expressionTerms[0];
+        for (int k = 1; k < expressionTerms.size(); k++) {
+            minimizedExpression += " + " + expressionTerms[k];
+        }
+        possibleMinimizedExpressions.push_back(minimizedExpression);
+
+        *log << "[ImplicantsTable] Minimized Expression: " << minimizedExpression << endl;
     }
 
-    string minimizedExpression = expressions[0];
-    for (int i = 1; i < expressions.size(); i++) {
-        minimizedExpression += " + " + expressions[i];
-    }
-
-    *log << "[ImplicantsTable] Minimized Expression: " << minimizedExpression << endl;
-
-    return minimizedExpression;
+    return possibleMinimizedExpressions;
 }

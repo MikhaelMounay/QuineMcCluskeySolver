@@ -34,10 +34,20 @@ set<string> getExpectedResult(const string& testFilepath) {
 bool runTestCase(const string& testFilepath) {
     Logger log{};
     IOHandler ioHandler(&log, testFilepath);
-    string result = ioHandler.resolveMinimizedExpression();
+    vector<string> possibleExpressions = ioHandler.resolveMinimizedExpression();
 
-    set<string> possibleExpressions = getExpectedResult(testFilepath);
-    return (possibleExpressions.count(result) > 0);
+    set<string> possibleAnswers = getExpectedResult(testFilepath);
+
+    if (possibleAnswers.size() != possibleExpressions.size()) {
+        return false;
+    }
+
+    for (int i = 0; i < possibleExpressions.size(); i++) {
+        if (!possibleAnswers.contains(possibleExpressions[i])) {
+            return false;
+        }
+    }
+    return true;
 }
 
 TEST(MainTest, TestCase01) {

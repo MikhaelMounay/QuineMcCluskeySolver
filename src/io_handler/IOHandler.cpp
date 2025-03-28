@@ -232,7 +232,7 @@ void IOHandler::setInputFilePath(string InputFilePath) {
 }
 
 // Methods
-string IOHandler::resolveMinimizedExpression() {
+vector<string> IOHandler::resolveMinimizedExpression() {
     vector<Term> allTerms = minterms;
     allTerms.insert(allTerms.end(), dontcares.begin(), dontcares.end());
 
@@ -241,8 +241,8 @@ string IOHandler::resolveMinimizedExpression() {
     ImplicantsTable PImpsTable(log, QMTable.getPrimeImplicants(), minterms,
                                numberOfVariables);
 
-    minimizedExpression = PImpsTable.getMinimizedExpression();
-    return minimizedExpression;
+    possibleMinimizedExpression = PImpsTable.getMinimizedExpression();
+    return possibleMinimizedExpression;
 }
 
 bool IOHandler::writeToOutputFiles() {
@@ -264,13 +264,21 @@ bool IOHandler::writeToOutputFiles() {
         fileContent << inputFile.rdbuf();
 
         outputFile << fileContent.str() << endl;
-        outputFile << minimizedExpression << endl;
+        for (int i = 0; i < possibleMinimizedExpression.size(); i++) {
+            outputFile << possibleMinimizedExpression[i];
+
+            if (i + 1 < possibleMinimizedExpression.size()) {
+                outputFile << " , ";
+            }
+        }
+        outputFile << endl;
 
         outputFile.close();
     }
 
     if (!verilogFilepath.empty()) {
-        VerilogComposer vComposer(log, minimizedExpression);
+        // Could make different files for each possible minimized expression
+        VerilogComposer vComposer(log, possibleMinimizedExpression[0]);
 
         ofstream verilogFile(verilogFilepath);
         if (!verilogFile.is_open()) {

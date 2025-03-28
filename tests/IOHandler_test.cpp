@@ -29,7 +29,7 @@ TEST(IOHandlerTest, ConstructorReadsInputFile) {
 
     IOHandler ioHandler(&log, "temp_input.txt");
 
-    EXPECT_EQ(ioHandler.resolveMinimizedExpression(),
+    EXPECT_EQ(ioHandler.resolveMinimizedExpression()[0],
               "AB + C");
 }
 
@@ -44,7 +44,7 @@ TEST(IOHandlerTest, SetInputFilePath) {
 
     ioHandler.setInputFilePath("temp_input.txt");
 
-    EXPECT_EQ(ioHandler.resolveMinimizedExpression(),
+    EXPECT_EQ(ioHandler.resolveMinimizedExpression()[0],
               "AB + C");
 }
 
@@ -56,7 +56,7 @@ TEST(IOHandlerTest, HandlesMaxterms) {
 
     IOHandler ioHandler(&log, "temp_input.txt");
 
-    EXPECT_EQ(ioHandler.resolveMinimizedExpression(), "A");
+    EXPECT_EQ(ioHandler.resolveMinimizedExpression()[0], "A");
 }
 
 // Test writing to output files
