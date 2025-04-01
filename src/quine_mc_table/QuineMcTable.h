@@ -17,6 +17,7 @@ private:
     vector<Term> minterms;
     vector<Term> _minterms; // Just for logging & debugging purposes
     vector<Term> primeImps;
+    vector<string> primeImpsString;
     vector<vector<string>> table;
 
     // Helpers
@@ -39,6 +40,7 @@ public:
 
     // Methods
     vector<Term> getPrimeImplicants();
+    vector<string> getPrimeImplicantsString();
 };
 
 #endif //QUINEMCTABLE_H

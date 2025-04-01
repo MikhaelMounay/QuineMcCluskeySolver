@@ -18,12 +18,13 @@ private:
     vector<vector<bool>> table;
     int numberOfVariables;
 
+    vector<string> essentialImpsString;
+
     // Helpers
-    static string getExpressionFromBinary(const string& binaryValue,
-                                          const vector<char>& variables);
     void createAndSimplifyTable();
     bool eliminateDominatedRows();
     bool eliminateDominatedColumns();
+    void extractEssentialImps();
     vector<vector<Term>> applyPetricksMethod();
     void printTable();
 
@@ -36,8 +37,13 @@ public:
     // Setters
     void _setLogger(Logger* logger);
 
+    // Helpers
+    static string getExpressionFromBinary(const string& binaryValue,
+                                          const vector<char>& variables);
+
     // Methods
     vector<string> getMinimizedExpression();
+    vector<string> getEssentialImplicantsString();
 };
 
 #endif //IMPLICANTSTABLE_H

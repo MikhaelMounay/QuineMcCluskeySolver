@@ -2,6 +2,8 @@
 #include <iomanip>
 #include <algorithm>
 
+#include "../implicants_table/ImplicantsTable.h"
+
 // Constructors
 QuineMcTable::QuineMcTable() {
     log = new Logger;
@@ -9,7 +11,8 @@ QuineMcTable::QuineMcTable() {
     numberOfVariables = 0;
 }
 
-QuineMcTable::QuineMcTable(Logger* Log, vector<Term> Minterms, int NumberOfVariables) {
+QuineMcTable::QuineMcTable(Logger* Log, vector<Term> Minterms,
+                           int NumberOfVariables) {
     log = Log;
 
     minterms.assign(Minterms.begin(), Minterms.end());
@@ -53,6 +56,23 @@ void QuineMcTable::solve() {
         }
         minterms.assign(newMinterms.begin(), newMinterms.end());
     }
+
+    // Setting Prime Implicants as string expressions
+    set<string> primeImpsSet;
+
+    vector<char> variables(numberOfVariables);
+    for (int i = 0; i < numberOfVariables; i++) {
+        variables[i] = static_cast<char>(65 + i);
+    }
+
+    for (int i = 0; i < primeImps.size(); i++) {
+        primeImpsSet.insert(ImplicantsTable::getExpressionFromBinary(
+            primeImps[i].getBinaryValue(),
+            variables));
+    }
+    *log << endl;
+
+    primeImpsString.assign(primeImpsSet.begin(), primeImpsSet.end());
 }
 
 void QuineMcTable::sortMintermsByOnes() {
@@ -98,24 +118,28 @@ vector<Term> QuineMcTable::getPrimeImplicants() {
     return primeImps;
 }
 
+vector<string> QuineMcTable::getPrimeImplicantsString() {
+    return primeImpsString;
+}
+
 // Utils
 void QuineMcTable::_logData() {
-    *log << "[QuineMcTable] Minterms: ";
-    for (int i = 0; i < minterms.size(); i++) {
-        *log << minterms[i].getBinaryValue();
-
-        if (i < minterms.size() - 1) {
-            *log << ", ";
-        }
-    }
-    *log << endl;
-
     *log << "[QuineMcTable] Prime Implicants: ";
     for (int i = 0; i < primeImps.size(); i++) {
         *log << primeImps[i].getBinaryValue();
 
         if (i < primeImps.size() - 1) {
-            *log << ", ";
+            *log << " , ";
+        }
+    }
+    *log << endl << endl;
+
+    *log << "[QuineMcTable] Prime Implicants: ";
+    for (int i = 0; i < primeImpsString.size(); i++) {
+        *log << primeImpsString[i];
+
+        if (i < primeImpsString.size() - 1) {
+            *log << " , ";
         }
     }
     *log << endl << endl;

@@ -1,6 +1,7 @@
 #include "ImplicantsTable.h"
 
 #include <algorithm>
+#include <unordered_map>
 #include <iostream>
 using namespace std;
 
@@ -65,6 +66,8 @@ void ImplicantsTable::createAndSimplifyTable() {
             << endl;
         printTable();
     } while (repeatFlag);
+
+    extractEssentialImps();
 }
 
 bool ImplicantsTable::eliminateDominatedRows() {
@@ -174,6 +177,41 @@ bool ImplicantsTable::eliminateDominatedColumns() {
     return (numCols != table[0].size());
 }
 
+void ImplicantsTable::extractEssentialImps() {
+    vector<char> variables(numberOfVariables);
+    for (int i = 0; i < numberOfVariables; i++) {
+        variables[i] = static_cast<char>(65 + i);
+    }
+
+    *log << "[ImplicantsTable] Essential Implicants: ";
+    unordered_map<string, int> uniqueRows;
+    for (int i = 0; i < primeImps.size(); i++) {
+        string row;
+        for (int j = 0; j < table[i].size(); j++) {
+            row += to_string(table[i][j]);
+        }
+
+        if (uniqueRows.contains(row)) {
+            uniqueRows.erase(row);
+        } else {
+            uniqueRows[row] = i;
+        }
+    }
+
+    for (auto it = uniqueRows.begin(); it != uniqueRows.end(); it++) {
+        string s = getExpressionFromBinary(
+            primeImps[it->second].getBinaryValue(),
+            variables);
+        essentialImpsString.push_back(s);
+        *log << s;
+
+        if (next(it) != uniqueRows.end()) {
+            *log << " , ";
+        }
+    }
+    *log << endl << endl;
+}
+
 // TODO: needs a bit of tweaking
 vector<vector<Term>> ImplicantsTable::applyPetricksMethod() {
     int numRows = table.size();
@@ -188,7 +226,7 @@ vector<vector<Term>> ImplicantsTable::applyPetricksMethod() {
             }
         }
 
-        *log << "[Petrick'sMethod] Term " << j << ": ";
+        *log << "[PetricksMethod] Term " << j << ": ";
         for (int k = 0; k < terms[j].size(); k++) {
             *log << terms[j][k] << " ";
         }
@@ -196,7 +234,7 @@ vector<vector<Term>> ImplicantsTable::applyPetricksMethod() {
     }
 
     // Generating all possible product terms
-    vector<set<int>> products = { {terms[0].begin(), terms[0].end()} };
+    vector<set<int>> products = {{terms[0].begin(), terms[0].end()}};
     for (int i = 1; i < numCols; i++) {
         vector<set<int>> newProducts;
 
@@ -244,7 +282,8 @@ vector<vector<Term>> ImplicantsTable::applyPetricksMethod() {
     // Could return a possible answer or all of them if needed
     vector<vector<Term>> essentialImplicants(minimalProducts.size());
     for (int i = 0; i < minimalProducts.size(); i++) {
-        for (auto it = minimalProducts[i].begin(); it != minimalProducts[i].end(); it++) {
+        for (auto it = minimalProducts[i].begin();
+             it != minimalProducts[i].end(); it++) {
             essentialImplicants[i].push_back(primeImps[*it]);
 
             *log << *it << " ";
@@ -293,7 +332,6 @@ void ImplicantsTable::printTable() {
 
 // Setters
 void ImplicantsTable::_setLogger(Logger* logger) {
-    delete log;
     log = logger;
 }
 
@@ -306,15 +344,15 @@ vector<string> ImplicantsTable::getMinimizedExpression() {
         variables[i] = static_cast<char>(65 + i);
     }
 
-    vector<vector<Term>> essentialImplicants = applyPetricksMethod();
+    vector<vector<Term>> impsCombinations = applyPetricksMethod();
 
-
-    for (int i = 0; i < essentialImplicants.size(); i++) {
+    for (int i = 0; i < impsCombinations.size(); i++) {
         vector<string> expressionTerms;
 
-        for (int j = 0; j < essentialImplicants[i].size(); j++) {
-            string binaryValue = essentialImplicants[i][j].getBinaryValue();
-            string expressionTerm = getExpressionFromBinary(binaryValue, variables);
+        for (int j = 0; j < impsCombinations[i].size(); j++) {
+            string binaryValue = impsCombinations[i][j].getBinaryValue();
+            string expressionTerm = getExpressionFromBinary(
+                binaryValue, variables);
 
             if (expressionTerm.empty()) {
                 *log << "[ImplicantsTable] Minimized Expression: " << 1 << endl;
@@ -330,8 +368,14 @@ vector<string> ImplicantsTable::getMinimizedExpression() {
         }
         possibleMinimizedExpressions.push_back(minimizedExpression);
 
-        *log << "[ImplicantsTable] Minimized Expression: " << minimizedExpression << endl;
+        *log << "[ImplicantsTable] Minimized Expression: " <<
+            minimizedExpression << endl;
     }
+    *log << endl;
 
     return possibleMinimizedExpressions;
+}
+
+vector<string> ImplicantsTable::getEssentialImplicantsString() {
+    return essentialImpsString;
 }

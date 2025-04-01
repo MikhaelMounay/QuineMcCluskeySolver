@@ -79,6 +79,29 @@ int main(int argc, char* argv[]) {
     IOHandler ioHandler(&log, inputFilepath, outputFilepath, verilogFilepath,
                         logFilepath);
     vector<string> possibleExpressions = ioHandler.resolveMinimizedExpression();
+    vector<string> primeImplicants = ioHandler.getPrimeImplicants();
+    vector<string> essentialImplicants = ioHandler.getEssentialsImplicants();
+
+    cout << "Prime Implicants: ";
+    for (int i = 0; i < primeImplicants.size(); i++) {
+        cout << primeImplicants[i];
+
+        if (i < primeImplicants.size() - 1) {
+            cout << " , ";
+        }
+    }
+    cout << endl << endl;
+
+    cout << "Essential Implicants: ";
+    for (int i = 0; i < essentialImplicants.size(); i++) {
+        cout << essentialImplicants[i];
+
+        if (i < essentialImplicants.size() - 1) {
+            cout << " , ";
+        }
+    }
+    cout << endl << endl;
+
     for (int i = 0; i < possibleExpressions.size(); i++) {
         cout << "F = " << possibleExpressions[i] << endl;
     }

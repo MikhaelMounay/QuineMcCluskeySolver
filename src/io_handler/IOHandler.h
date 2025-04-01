@@ -22,6 +22,9 @@ private:
     vector<string> possibleMinimizedExpression;
     string verilogCode;
 
+    vector<string> primeImplicants;
+    vector<string> essentialImplicants;
+
     // Helpers
     void readInputFile();
 
@@ -41,6 +44,8 @@ public:
 
     // Methods
     vector<string> resolveMinimizedExpression();
+    vector<string> getPrimeImplicants();
+    vector<string> getEssentialsImplicants();
     bool writeToOutputFiles();
 };
 

@@ -237,12 +237,22 @@ vector<string> IOHandler::resolveMinimizedExpression() {
     allTerms.insert(allTerms.end(), dontcares.begin(), dontcares.end());
 
     QuineMcTable QMTable(log, allTerms, numberOfVariables);
+    primeImplicants = QMTable.getPrimeImplicantsString();
 
     ImplicantsTable PImpsTable(log, QMTable.getPrimeImplicants(), minterms,
                                numberOfVariables);
+    essentialImplicants = PImpsTable.getEssentialImplicantsString();
 
     possibleMinimizedExpression = PImpsTable.getMinimizedExpression();
     return possibleMinimizedExpression;
+}
+
+vector<string> IOHandler::getPrimeImplicants() {
+    return primeImplicants;
+}
+
+vector<string> IOHandler::getEssentialsImplicants() {
+    return essentialImplicants;
 }
 
 bool IOHandler::writeToOutputFiles() {
