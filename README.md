@@ -1,5 +1,6 @@
 # Quine-McCluskey Logic Minimization
 CSCE2301 Diginal Design I (Spring 2025) - Project 1
+Here's a sample `README.txt` file for your project:
 
 ---
 
@@ -7,33 +8,32 @@ CSCE2301 Diginal Design I (Spring 2025) - Project 1
 
 ## Overview
 
-This C++ application is designed to minimize Boolean functions represented by minterms, maxterms, and don't-care terms. It reads input from a text file, generates prime implicants, identifies essential prime implicants, and produces a minimized Boolean expression. Additionally, it generates a Verilog module based on the minimized expression.
-
+This project is a C++ program designed to minimize Boolean functions using the Quine-McCluskey method. The program reads a Boolean function from a text file, processes it to identify prime implicants (PIs) and essential prime implicants (EPIs), and provides the minimized Boolean expression. Additionally, it can generate a Verilog module based on the minimized expression.
 ## Requirements
 
-- **C++ Compiler**: A C++ compiler (e.g., GCC) is required to build the application.
+- **C++ Compiler**: A C++ compiler is required to build the application.
 - **Input File Format**: The input file should have three lines:
-  1. The number of variables.
-  2. Minterms (indicated by 'm')
-  3. Don't-care terms (indicated by 'd'), separated by commas.
+    1. The number of variables.
+    2. Minterms (indicated by 'm') or maxterms (indicated by 'M'), separated by commas.
+    3. Don't-care terms (indicated by 'd'), separated by commas.
 
 ## Building the Application
 
 1. Clone the repository to your local machine.
 2. Navigate to the project directory.
-3. Compile the source code using a C++ compiler. For example, with GCC:
+3. Compile the source code using a C++ compiler:
    ```bash
-   // TODO:
+    -o QuineMcCluskeySolver main.cpp
    ```
 4. Run the application:
    ```bash
-   // TODO:
+   ./QuineMcCluskeySolver
    ```
 
 ## Using the Application
 
-1. 
-2. 
+1. Prepare an input file named `input.txt` in the same directory as the executable. The file should be formatted as described above.
+2. Run the application. It will read from `input.txt` and print the prime implicants, essential prime implicants, minimized Boolean expression, and the Verilog module.
 
 ## Example Input File
 
@@ -45,8 +45,64 @@ d0,d5
 
 This example specifies a Boolean function with 3 variables, minterms 1, 3, 6, and 7, and don't-care terms 0 and 5.
 
-Output
+The application will display the following:
+- **Prime Implicants**: Binary representation and covered minterms/don't-care terms.
+- **Essential Prime Implicants**: Binary representation and covered minterms.
+- **Minimized Boolean Expression**: Simplified Boolean expression.
+- **Verilog Module**: A basic Verilog module implementing the minimized expression.
 
----
+**Output**:
+```plaintext
+Prime Implicants: A'B' , AB , C
 
-## Contributions
+Essential Implicants: C , AB
+
+F = AB + C
+```
+**Verilog**:
+```plaintext
+`timescale 1ns / 1ps
+
+// Boolean Expression: AB + C
+
+module fn(
+	input A, B, C, 
+	output X
+	);
+
+	wire _1, _2;
+
+	and(_1, A, B);
+	and(_2, C, B);
+
+	or(X, _1, _2);
+
+endmodule
+
+```
+
+## Bonus Feature
+
+The application includes a bonus feature to generate a Verilog module based on the minimized Boolean expression.
+
+**Verilog**:
+```plaintext
+`timescale 1ns / 1ps
+
+// Boolean Expression: AB + C
+
+module fn(
+	input A, B, C, 
+	output X
+	);
+
+	wire _1, _2;
+
+	and(_1, A, B);
+	and(_2, C, B);
+
+	or(X, _1, _2);
+
+endmodule
+
+```
