@@ -1,4 +1,4 @@
-# Quine-McCluskey Logic Minimization
+# Quine-McCluskey Solver (Logic Functions Minimization)
 CSCE2301 Diginal Design I (Spring 2025) - Project 1
 
 ## Overview
