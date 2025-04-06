@@ -91,7 +91,7 @@ endmodule
 
     *Notice that you have to have CMake and a C++ compiler installed on your computer beforehand!*
 
-    For release builds, [Zig](https://ziglang.org/) is used for more optimized and cross-compiled binaries
+    For release builds, [Zig](https://ziglang.org/) is used for more optimized and cross-compiled binaries (the `zig.build` file is already prepared in the repo)
         
     ```bash
     zig build --release
