@@ -22,8 +22,10 @@ private:
     vector<string> possibleMinimizedExpression;
     string verilogCode;
 
-    vector<string> primeImplicants;
-    vector<string> essentialImplicants;
+    vector<Term> primeImplicants;
+    vector<string> primeImplicantsString;
+    vector<Term> essentialImplicants;
+    vector<string> essentialImplicantsString;
 
     // Helpers
     void readInputFile();
@@ -38,14 +40,20 @@ public:
     IOHandler(Logger* Log, string InputFilepath, string OutputFilepath,
               string VerilogFile, string LogFilepath);
 
+    // Getters
+    int getNumberOfVariables();
+    vector<Term> getPrimeImplicants();
+    vector<string> getPrimeImplicantsString();
+    vector<Term> getEssentialImplicants();
+    vector<string> getEssentialsImplicantsString();
+
     // Setters
     void _setLogger(Logger* logger);
     void setInputFilePath(string InputFilePath);
 
     // Methods
     vector<string> resolveMinimizedExpression();
-    vector<string> getPrimeImplicants();
-    vector<string> getEssentialsImplicants();
+    string getStandardOutput();
     bool writeToOutputFiles();
 };
 

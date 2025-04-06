@@ -1,9 +1,10 @@
+#include <format>
 #include <iostream>
-#include <fstream>
-using namespace std;
+#include <iomanip>
 
 #include "io_handler/IOHandler.h"
 #include "logger/Logger.h"
+using namespace std;
 
 string usageMsg(const string& argv0) {
     return "Usage: " + argv0 +
@@ -78,33 +79,12 @@ int main(int argc, char* argv[]) {
     // Reading, Processing Business Logic, and Writing to output destinations are handed to IOHandler
     IOHandler ioHandler(&log, inputFilepath, outputFilepath, verilogFilepath,
                         logFilepath);
-    vector<string> possibleExpressions = ioHandler.resolveMinimizedExpression();
-    vector<string> primeImplicants = ioHandler.getPrimeImplicants();
-    vector<string> essentialImplicants = ioHandler.getEssentialsImplicants();
+    // You could use these methods if you want to print the output in your custom way
+    // vector<string> possibleExpressions = ioHandler.resolveMinimizedExpression();
+    // vector<Term> primeImplicants = ioHandler.getPrimeImplicants();
+    // vector<Term> essentialImplicants = ioHandler.getEssentialImplicants();
 
-    cout << "Prime Implicants: ";
-    for (int i = 0; i < primeImplicants.size(); i++) {
-        cout << primeImplicants[i];
-
-        if (i < primeImplicants.size() - 1) {
-            cout << " , ";
-        }
-    }
-    cout << endl << endl;
-
-    cout << "Essential Implicants: ";
-    for (int i = 0; i < essentialImplicants.size(); i++) {
-        cout << essentialImplicants[i];
-
-        if (i < essentialImplicants.size() - 1) {
-            cout << " , ";
-        }
-    }
-    cout << endl << endl;
-
-    for (int i = 0; i < possibleExpressions.size(); i++) {
-        cout << "F = " << possibleExpressions[i] << endl;
-    }
+    cout << ioHandler.getStandardOutput();
 
     if (!ioHandler.writeToOutputFiles()) {
         log.fatal("Error: Failed to write to output files!");

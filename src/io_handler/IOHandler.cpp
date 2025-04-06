@@ -3,11 +3,12 @@
 #include <fstream>
 #include<algorithm>
 #include <cmath>
-using namespace std;
+#include <format>
 
 #include "../implicants_table/ImplicantsTable.h"
 #include "../verilog_composer/VerilogComposer.h"
 #include "../quine_mc_table/QuineMcTable.h"
+using namespace std;
 
 // Constructors
 IOHandler::IOHandler() {
@@ -163,63 +164,27 @@ void IOHandler::readInputFile() {
     inputFile.close();
 }
 
-// void IOHandler::readInputFile() {
-//     ifstream inputFile(inputFilepath);
-//     if (!inputFile.is_open()) {
-//         log->fatal("Error opening file " + inputFilepath);
-//     }
-//
-//     if (inputFile.peek() == ifstream::traits_type::eof()) {
-//         log->fatal("File " + inputFilepath + " is empty");
-//     }
-//
-//     // Read the number of variables
-//     inputFile >> numberOfVariables;
-//
-//     // Validation on numberOfVariables
-//     if (numberOfVariables == 0) {
-//         log->fatal("Error: please provide the number of variables");
-//     }
-//     if (numberOfVariables > 20) {
-//         log->fatal("Error: max supported number of variables is 20");
-//     }
-//     inputFile.get(); // To skip the '\n' after
-//
-//     // Read the minterms
-//     string line;
-//     getline(inputFile, line);
-//
-//     // Validation on numberOfVariables
-//     if (line.empty() || line == "m") {
-//         log->fatal("Error: please provide a valid input for minterms");
-//     }
-//
-//     stringstream ss(line);
-//     string term;
-//     while (getline(ss, term, ',')) {
-//         minterms.emplace_back(log, stoi(term.substr(1)), numberOfVariables);
-//     }
-//
-//     // Read the don't-cares
-//     getline(inputFile, line);
-//     ss.str(line);
-//
-//     if (!line.empty() && line != "d") {
-//         ss.seekg(0);
-//         ss.clear();
-//
-//         while (getline(ss, term, ',')) {
-//             Term tempTerm(log, stoi(term.substr(1)), numberOfVariables);
-//             if (find(minterms.begin(), minterms.end(), tempTerm) == minterms.end()) {
-//                 dontcares.emplace_back(log, stoi(term.substr(1)), numberOfVariables);
-//             } else {
-//                 log->fatal("Error: " + term.substr(1) + " cannot be a minterm and a don't-care term at the same time. i.e., minterms and don't cares shouldn't overlap!");
-//             }
-//         }
-//     }
-//
-//     inputFile.close();
-// }
+
+// Getters
+int IOHandler::getNumberOfVariables() {
+    return numberOfVariables;
+}
+
+vector<Term> IOHandler::getPrimeImplicants() {
+    return primeImplicants;
+}
+
+vector<string> IOHandler::getPrimeImplicantsString() {
+    return primeImplicantsString;
+}
+
+vector<Term> IOHandler::getEssentialImplicants() {
+    return essentialImplicants;
+}
+
+vector<string> IOHandler::getEssentialsImplicantsString() {
+    return essentialImplicantsString;
+}
 
 // Setters
 void IOHandler::_setLogger(Logger* logger) {
@@ -237,22 +202,67 @@ vector<string> IOHandler::resolveMinimizedExpression() {
     allTerms.insert(allTerms.end(), dontcares.begin(), dontcares.end());
 
     QuineMcTable QMTable(log, allTerms, numberOfVariables);
-    primeImplicants = QMTable.getPrimeImplicantsString();
+    primeImplicants = QMTable.getPrimeImplicants();
+    primeImplicantsString = QMTable.getPrimeImplicantsString();
 
     ImplicantsTable PImpsTable(log, QMTable.getPrimeImplicants(), minterms,
                                numberOfVariables);
-    essentialImplicants = PImpsTable.getEssentialImplicantsString();
+    essentialImplicants = PImpsTable.getEssentialImplicants();
+    essentialImplicantsString = PImpsTable.getEssentialImplicantsString();
 
     possibleMinimizedExpression = PImpsTable.getMinimizedExpression();
     return possibleMinimizedExpression;
 }
 
-vector<string> IOHandler::getPrimeImplicants() {
-    return primeImplicants;
-}
+string IOHandler::getStandardOutput() {
+    stringstream ss;
 
-vector<string> IOHandler::getEssentialsImplicants() {
-    return essentialImplicants;
+    vector<string> possibleExpressions = resolveMinimizedExpression();
+
+    ss << "Prime Implicants:\n";
+    for (int i = 0; i < primeImplicants.size(); i++) {
+        ss << "[" << format("{:02d}", i + 1) << "] " <<
+            ImplicantsTable::getExpressionFromBinary(
+                primeImplicants[i].getBinaryValue(),
+                numberOfVariables);
+        ss << "\t covers: ";
+        set<int> coveredTerms = primeImplicants[i].getCoveredTerms();
+        for (auto it = coveredTerms.begin(); it != coveredTerms.end(); it++) {
+            ss << *it;
+            if (next(it) != coveredTerms.end()) {
+                ss << " | ";
+            }
+        }
+
+        ss << "\n";
+    }
+    ss << endl;
+
+    ss << "Essential Implicants:\n";
+    for (int i = 0; i < essentialImplicants.size(); i++) {
+        ss << "[" << format("{:02d}", i + 1) << "] " <<
+            ImplicantsTable::getExpressionFromBinary(
+                essentialImplicants[i].getBinaryValue(),
+                numberOfVariables);
+        ss << "\t covers: ";
+        set<int> coveredTerms = essentialImplicants[i].getCoveredTerms();
+        for (auto it = coveredTerms.begin(); it != coveredTerms.end(); it++) {
+            ss << *it;
+            if (next(it) != coveredTerms.end()) {
+                ss << " | ";
+            }
+        }
+        ss << "\n";
+    }
+    ss << endl;
+
+    ss << "Possible Minimizations:\n";
+    for (int i = 0; i < possibleExpressions.size(); i++) {
+        ss << "[" << format("{:02d}", i + 1) << "] " << "F = " <<
+            possibleExpressions[i] << endl;
+    }
+
+    return ss.str();
 }
 
 bool IOHandler::writeToOutputFiles() {
@@ -274,14 +284,7 @@ bool IOHandler::writeToOutputFiles() {
         fileContent << inputFile.rdbuf();
 
         outputFile << fileContent.str() << endl;
-        for (int i = 0; i < possibleMinimizedExpression.size(); i++) {
-            outputFile << possibleMinimizedExpression[i];
-
-            if (i + 1 < possibleMinimizedExpression.size()) {
-                outputFile << " , ";
-            }
-        }
-        outputFile << endl;
+        outputFile << getStandardOutput() << endl;
 
         outputFile.close();
     }
@@ -308,7 +311,10 @@ bool IOHandler::writeToOutputFiles() {
             return false;
         }
 
-        logFile << log->toString();
+        logFile << log->toString() << endl;
+        logFile << getStandardOutput() << endl;
+
+        logFile.close();
     }
 
     return true;

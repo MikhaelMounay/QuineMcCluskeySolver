@@ -18,6 +18,7 @@ private:
     vector<vector<bool>> table;
     int numberOfVariables;
 
+    vector<Term> essentialImps;
     vector<string> essentialImpsString;
 
     // Helpers
@@ -38,11 +39,14 @@ public:
     void _setLogger(Logger* logger);
 
     // Helpers
+    // static string getExpressionFromBinary(const string& binaryValue,
+    //                                       const vector<char>& variables);
     static string getExpressionFromBinary(const string& binaryValue,
-                                          const vector<char>& variables);
+                                          const int& numberOfVariables);
 
     // Methods
     vector<string> getMinimizedExpression();
+    vector<Term> getEssentialImplicants();
     vector<string> getEssentialImplicantsString();
 };
 

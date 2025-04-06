@@ -68,7 +68,7 @@ void QuineMcTable::solve() {
     for (int i = 0; i < primeImps.size(); i++) {
         primeImpsSet.insert(ImplicantsTable::getExpressionFromBinary(
             primeImps[i].getBinaryValue(),
-            variables));
+            numberOfVariables));
     }
     *log << endl;
 
