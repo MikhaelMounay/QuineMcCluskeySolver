@@ -1,66 +1,62 @@
 # Quine-McCluskey Logic Minimization
 CSCE2301 Diginal Design I (Spring 2025) - Project 1
-Here's a sample `README.txt` file for your project:
-
----
-
-# Boolean Function Minimizer
 
 ## Overview
 
-This project is a C++ program designed to minimize Boolean functions using the Quine-McCluskey method. The program reads a Boolean function from a text file, processes it to identify prime implicants (PIs) and essential prime implicants (EPIs), and provides the minimized Boolean expression. Additionally, it can generate a Verilog module based on the minimized expression.
-## Requirements
+This project is a C++ console app designed to minimize Boolean functions using the Quine-McCluskey method.
 
-- **C++ Compiler**: A C++ compiler is required to build the application.
-- **Input File Format**: The input file should have three lines:
-    1. The number of variables.
-    2. Minterms (indicated by 'm') or maxterms (indicated by 'M'), separated by commas.
-    3. Don't-care terms (indicated by 'd'), separated by commas.
+The program reads a Boolean function from a text file, processes it to identify prime implicants (PIs) and essential prime implicants (EPIs), and provides the minimized Boolean expression. Additionally, it can generate a Verilog module based on the minimized expression.
 
-## Building the Application
+## Usage
 
-1. Clone the repository to your local machine.
-2. Navigate to the project directory.
-3. Compile the source code using a C++ compiler:
-   ```bash
-    -o QuineMcCluskeySolver main.cpp
-   ```
-4. Run the application:
-   ```bash
-   ./QuineMcCluskeySolver
-   ```
+The app can be used from console as follows:
 
-## Using the Application
+`./QuineMcCluskeySolver-vx.x-arch-os [-v] [-d <dump_log_file>] [-o <output_file>] [--verilog <verilog_file>] <input_file>`
 
-1. Prepare an input file named `input.txt` in the same directory as the executable. The file should be formatted as described above.
-2. Run the application. It will read from `input.txt` and print the prime implicants, essential prime implicants, minimized Boolean expression, and the Verilog module.
+*You can easily download and use the prebuilt binaries from the repos the **GitHub Releases** page.*
 
-## Example Input File
+### CLI Switches/Flags
 
+- `<input_file>`: filename with the input written in the specified format below
+- `-v` (optional): verbose output
+- `-d <dump_log_file>` (optional): filename to dump the log to (including solving steps and the final output)
+- `-o <output_file>` (optional): filename to save the output to
+- `--verilog <verilog_file>` (optional): filename to save the Verilog Module to
+
+
+### Input File Format
+The input file should have three lines:
+1. The number of variables.
+2. Minterms (indicated by 'm') or maxterms (indicated by 'M'), separated by commas.
+3. Don't-care terms (indicated by 'd'), separated by commas.
+
+
+### Example
+
+#### Input File
 ```plaintext
 3
 m1,m3,m6,m7
 d0,d5
 ```
 
-This example specifies a Boolean function with 3 variables, minterms 1, 3, 6, and 7, and don't-care terms 0 and 5.
-
-The application will display the following:
-- **Prime Implicants**: Binary representation and covered minterms/don't-care terms.
-- **Essential Prime Implicants**: Binary representation and covered minterms.
-- **Minimized Boolean Expression**: Simplified Boolean expression.
-- **Verilog Module**: A basic Verilog module implementing the minimized expression.
-
-**Output**:
+#### Output
 ```plaintext
-Prime Implicants: A'B' , AB , C
+Prime Implicants:
+[01] A'B'        covers: 0 | 1
+[02] AB  covers: 6 | 7
+[03] C   covers: 1 | 3 | 5 | 7
 
-Essential Implicants: C , AB
+Essential Implicants:
+[01] C   covers: 1 | 3 | 5 | 7
+[02] AB  covers: 6 | 7
 
-F = AB + C
+Possible Minimizations:
+[01] F = AB + C
 ```
-**Verilog**:
-```plaintext
+
+#### Verilog Output (with the `--verilog` flag)
+```verilog
 `timescale 1ns / 1ps
 
 // Boolean Expression: AB + C
@@ -78,31 +74,41 @@ module fn(
 	or(X, _1, _2);
 
 endmodule
-
 ```
 
-## Bonus Feature
+---
 
-The application includes a bonus feature to generate a Verilog module based on the minimized Boolean expression.
+# For Developers
+## Building from Source
 
-**Verilog**:
-```plaintext
-`timescale 1ns / 1ps
+1. Clone the repository to your local machine.
+2. Navigate to the project directory.
+3. Compile the source code using a C++ compiler (the project is `CMake`-dependent; `GCC` was used during developed period):
 
-// Boolean Expression: AB + C
+    ```bash
+    cmake.exe --build cmake-build-profile_name --target QuineMcCluskeySolver
+    ```
 
-module fn(
-	input A, B, C, 
-	output X
-	);
+    *Notice that you have to have CMake and a C++ compiler installed on your computer beforehand!*
 
-	wire _1, _2;
+    For release builds, [Zig](https://ziglang.org/) is used for more optimized and cross-compiled binaries
+        
+    ```bash
+    zig build --release
+    ```    
 
-	and(_1, A, B);
-	and(_2, C, B);
+    *Notice that you have to have the Zig compiler installed on your computer beforehand!*
 
-	or(X, _1, _2);
 
-endmodule
+4. Run the application:
+   ```bash
+   ./QuineMcCluskeySolver [-v] [-d <dump_log_file>] [-o <output_file>] [--verilog <verilog_file>] <input_file>
+   ```
 
-```
+---
+
+## Contributors
+
+- [Mikhael Khalil](https://github.com/MikhaelMounay)
+- [Marina Nazeh](https://github.com/MarinaNazeh)
+- [Salma ElMarakby](https://github.com/salmawaleed055)
