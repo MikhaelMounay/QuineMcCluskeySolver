@@ -1,3 +1,7 @@
+### V1.3 (06-04-2025)
+- More structured and detailed output
+- Print the covered terms by Prime Implicants and Essential Implicants to the output
+
 ### V1.2 (01-04-2025)
 - Print the Prime & Essential Implicants to output along with all the possible minimizations of the function
 
