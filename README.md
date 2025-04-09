@@ -76,6 +76,9 @@ module fn(
 endmodule
 ```
 
+## Limitations
+- Although the program can theoretically process up to 20-variable functions, due to some memory limits, the program might crash if the number of minterms provided is too large, or the number of maxterms provided is too small.
+
 ---
 
 # For Developers
